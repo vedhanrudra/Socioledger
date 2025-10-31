@@ -44,7 +44,7 @@ const data = {
       url: "/dashboard",
     },
     {
-      title: "Items",
+      title: "Item",
       icon: Package,
       items: [
         { title: "Items Table", url: "/items/tableuser", icon: Package },
