@@ -34,6 +34,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+//import { SectionCards } from "./section-cards";
 
 // ✅ Sidebar Menu Data
 const data = {
@@ -47,39 +48,100 @@ const data = {
       title: "Item",
       icon: Package,
       items: [
-        { title: "Items Table", url: "/items/tableuser", icon: Package },
-        { title: "Items Groups", url: "#", icon: FileText },
-        { title: "Items Units", url: "#", icon: FileSpreadsheet },
+        { title: "Items Table", url: "/items/ItemTable", icon: Package },
+        { title: "Items Groups", url: "/items/ItemGroups", icon: FileText },
+        { title: "Items Units", url: "/items/ItemUnits", icon: FileSpreadsheet },
       ],
     },
     {
       title: "Years",
       icon: Calendar,
     },
-    {
-      title: "Vouchers",
-      icon: Receipt,
-      items: [
-        { title: "Estimate", url: "#", icon: FileText },
-        { title: "Sales", url: "#", icon: ShoppingCart },
-        { title: "Sale Return", url: "#", icon: CreditCard },
-        { title: "Purchase", url: "#", icon: ShoppingCart },
-        { title: "Purchase Return", url: "#", icon: CreditCard },
-      ],
-    },
-    {
-      title: "Reports",
-      icon: FileText,
-      items: [
-        { title: "Ledger Report", url: "#", icon: FileText },
-        { title: "Balance Sheet", url: "#", icon: FileSpreadsheet },
-        { title: "Cash Flow", url: "#", icon: PieChart },
-      ],
-    },
-    {
-      title: "Team",
-      icon: Users,
-    },
+   {
+    title: "Vouchers",
+    icon: Receipt,
+    items: [
+      { title: "Estimate", url: "#", icon: FileText },
+      { title: "Sales", url: "#", icon: ShoppingCart },
+      { title: "Sale Return", url: "#", icon: CreditCard },
+      { title: "Purchase", url: "#", icon: ShoppingCart },
+      { title: "Purchase Return", url: "#", icon: CreditCard },
+      { title: "Credit Note", url: "#", icon: FileText },
+      { title: "Debit Note", url: "#", icon: FileText },
+      { title: "Receipt Note", url: "#", icon: FileText },
+      { title: "Delivery Challans", url: "#", icon: FileText },
+      { title: "Opening", url: "#", icon: FileSpreadsheet },
+    ],
+  },
+  {
+    title: "Jobwork",
+    icon: Briefcase,
+    items: [
+      { title: "Material In", url: "#", icon: FileText },
+      { title: "Material Out", url: "#", icon: FileText },
+    ],
+  },
+  {
+    title: "Order",
+    icon: ShoppingCart,
+    items: [
+      { title: "Order Purchase", url: "#", icon: FileText },
+      { title: "Order Sale", url: "#", icon: FileText },
+    ],
+  },
+  {
+    title: "Quotations",
+    icon: FileText,
+  },
+  {
+    title: "Payments",
+    icon: CreditCard,
+  },
+  {
+    title: "Receipts",
+    icon: FileSpreadsheet,
+  },
+  {
+    title: "Ledgers",
+    icon: Users,
+    items: [
+      { title: "Ledgers", url: "#", icon: Users },
+      { title: "Ledger Groups", url: "#", icon: FileText },
+    ],
+  },
+  {
+    title: "Transfers",
+    icon: PieChart,
+  },
+  {
+    title: "Reports",
+    icon: FileText,
+    items: [
+      { title: "Ledger Report", url: "#", icon: FileText },
+      { title: "Balance Sheet", url: "#", icon: FileSpreadsheet },
+      { title: "Cash Flow", url: "#", icon: PieChart },
+      { title: "Day Book", url: "#", icon: Calendar },
+      { title: "Profit & Loss", url: "#", icon: FileText },
+      { title: "Trial Balance", url: "#", icon: FileText },
+      { title: "Stock", url: "#", icon: Package },
+      { title: "Voucher", url: "#", icon: Receipt },
+      { title: "Daily Register", url: "#", icon: FileText },
+      { title: "Ageing", url: "#", icon: Calendar },
+      { title: "TDS Report", url: "#", icon: FileSpreadsheet },
+    ],
+  },
+  {
+    title: "GST",
+    icon: FileSpreadsheet,
+    items: [
+      { title: "GSTR-1", url: "#", icon: FileText },
+      { title: "GST2B", url: "#", icon: FileSpreadsheet },
+    ],
+  },
+  {
+    title: "Team",
+    icon: Users,
+  },
   ],
 };
 
@@ -87,7 +149,7 @@ export function AppSidebar({ ...props }) {
   const [activeItem, setActiveItem] = React.useState(null);
 
   return (
-    <Sidebar {...props} className="bg-gray-200 text-black w-72">
+    <Sidebar {...props} className="bg-white-200 text-black w-72">
       {/* HEADER SECTION */}
       <SidebarHeader>
         <SidebarMenu>
