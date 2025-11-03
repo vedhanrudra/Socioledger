@@ -56,6 +56,7 @@ const data = {
     {
       title: "Years",
       icon: Calendar,
+      url: "years"
     },
    {
     title: "Vouchers",
