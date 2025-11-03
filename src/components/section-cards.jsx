@@ -157,3 +157,4 @@ export function SectionCards() {
     </div>
   );
 }
+export default SectionCards;
