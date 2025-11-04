@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
-import AddItem from "../common/Additem";
+import AddItem from "../items/Additem";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,14 +21,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-
-
+import TableFilter from "../years/Filter";
 
 // import { useDispatch, useSelector } from "react-redux";
 // import { Deleteuser } from "../store/userReducer";
 
-function Tableuser() {
+function TableYear() {
   // const userData = useSelector((state) => state.users);
   // const dispatch = useDispatch();
 
@@ -38,65 +36,7 @@ function Tableuser() {
   const recordsPerPage = 5;
 
   // Sample data for demo
-  const userData = [
-  {
-    id: 1,
-    group: "Beverages",
-    name: "Green Tea",
-    types: "Food & Drink",
-    hsn: "0902",
-    gst: "5%",
-    unit: "Box",
-    wantStock: "Yes",
-    status: "Active",
-  },
-  {
-    id: 2,
-    group: "Stationery",
-    name: "Notebook A5",
-    types: "Office Supply",
-    hsn: "4820",
-    gst: "12%",
-    unit: "Piece",
-    wantStock: "No",
-    status: "Active",
-  },
-  {
-    id: 3,
-    group: "Electronics",
-    name: "LED Bulb 9W",
-    types: "Electrical",
-    hsn: "8539",
-    gst: "18%",
-    unit: "Piece",
-    wantStock: "Yes",
-    status: "Active",
-  },
-  {
-    id: 4,
-    group: "Personal Care",
-    name: "Shampoo 200ml",
-    types: "Cosmetics",
-    hsn: "3305",
-    gst: "18%",
-    unit: "Bottle",
-    wantStock: "Yes",
-    status: "Inactive",
-  },
-  {
-    id: 5,
-    group: "Grocery",
-    name: "Basmati Rice",
-    types: "Food Grain",
-    hsn: "1006",
-    gst: "5%",
-    unit: "Kg",
-    wantStock: "Yes",
-    status: "Active",
-  },
-];
-
-
+  const userData = [];
 
   const filteredUsers = (userData || []).filter((user) =>
     (user?.name || "").toLowerCase().includes(filterText.toLowerCase())
@@ -128,103 +68,99 @@ function Tableuser() {
 
   return (
     <div className="p-6">
-
-      {/* filter */}
-      
-      {/* Search + Add Product */}
       <div className="flex items-center justify-between mb-6">
-        <AddItem />
+        <div></div>
+        <div className = "flex items center gap-2">
+          <TableFilter
+            filterName={filterText}
+            setFilterName={setFilterText}
+            onApply={() => console.log("Apply clicked with:", filterText)}
+            onClear={() => setFilterText("")}
+          />
+          <AddItem />
+        </div>
       </div>
 
       {/* Product Table */}
       <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <Table>
-          <TableCaption>A list of your products.</TableCaption>
           <TableHeader className="bg-gray-100">
             <TableRow>
               <TableHead
                 className="cursor-pointer select-none"
                 onClick={handleSort}
               >
-                Group{" "}
-                <span className="text-gray-500 text-sm">
-                  {sortOrder === "asc" ? "" : ""}
-                </span>
-              </TableHead>
-              <TableHead
-              onClick={handleSort}
-              className="cursor-pointer select-none"
-              >
                 Name{" "}
                 <span className="text-gray-500 text-sm">
                   {sortOrder === "asc" ? "" : ""}
                 </span>
               </TableHead>
-              <TableHead>Types</TableHead>
-              <TableHead>HSN/SAC Code</TableHead>
-              <TableHead>GST</TableHead>
-              <TableHead>Unit</TableHead>
-              <TableHead>Want stock</TableHead>
+              <TableHead
+                onClick={handleSort}
+                className="cursor-pointer select-none"
+              >
+                Start date{" "}
+                <span className="text-gray-500 text-sm">
+                  {sortOrder === "asc" ? "" : ""}
+                </span>
+              </TableHead>
+              <TableHead>End Date</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-  {userData.length > 0 ? (
-    userData.map((user) => (
-      <TableRow key={user.id}>
-        <TableCell>{user.group}</TableCell>
-        <TableCell>{user.name}</TableCell>
-        <TableCell>{user.types}</TableCell>
-        <TableCell>{user.hsn}</TableCell>
-        <TableCell>{user.gst}</TableCell>
-        <TableCell>{user.unit}</TableCell>
-        <TableCell>{user.wantStock}</TableCell>
-        <TableCell>{user.status}</TableCell>
-        <TableCell>
-         <TableCell className="text-center">
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <button className="px-3 py-1 text-xl font-bold text-gray-600 hover:bg-gray-100 rounded-md">
-        ...
-      </button>
-    </DropdownMenuTrigger>
+            {userData.length > 0 ? (
+              userData.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.group}</TableCell>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.types}</TableCell>
+                  <TableCell>{user.hsn}</TableCell>
+                  <TableCell>{user.gst}</TableCell>
+                  <TableCell>{user.unit}</TableCell>
+                  <TableCell>{user.wantStock}</TableCell>
+                  <TableCell>{user.status}</TableCell>
+                  <TableCell>
+                    <TableCell className="text-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="px-3 py-1 text-xl font-bold text-gray-600 hover:bg-gray-100 rounded-md">
+                            ...
+                          </button>
+                        </DropdownMenuTrigger>
 
-    <DropdownMenuContent align="end" className="w-32">
-      
+                        <DropdownMenuContent align="end" className="w-32">
+                          <DropdownMenuItem asChild>
+                            <Link
+                              to={`/edit/${user.id}`}
+                              className="flex items-center gap-2 hover:text-blue-600"
+                            >
+                              <FiEdit className="text-blue-500" /> Edit
+                            </Link>
+                          </DropdownMenuItem>
 
-      <DropdownMenuItem asChild>
-        <Link
-          to={`/edit/${user.id}`}
-          className="flex items-center gap-2 hover:text-blue-600"
-        >
-          <FiEdit className="text-blue-500" /> Edit
-        </Link>
-      </DropdownMenuItem>
-
-      <DropdownMenuItem
-        onClick={() => handleDelete(user.id)}
-        className="flex items-center gap-2 hover:text-red-600 text-red-500"
-      >
-        <MdDelete /> Delete
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-</TableCell>
-
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan="9" className="text-center py-6">
-        No products found.
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
-
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(user.id)}
+                            className="flex items-center gap-2 hover:text-red-600 text-red-500"
+                          >
+                            <MdDelete /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan="9" className="text-center py-6">
+                  No products found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
 
@@ -232,13 +168,12 @@ function Tableuser() {
       {sortedUsers.length > 0 && (
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 mt-4 rounded-lg shadow-sm">
           <p className="text-sm text-gray-700">
-            Showing{" "}
-            <span className="font-semibold">{firstIndex + 1}</span> to{" "}
+            Showing <span className="font-semibold">{firstIndex + 1}</span> to{" "}
             <span className="font-semibold">
               {Math.min(lastIndex, sortedUsers.length)}
             </span>{" "}
-            of{" "}
-            <span className="font-semibold">{sortedUsers.length}</span> results
+            of <span className="font-semibold">{sortedUsers.length}</span>{" "}
+            results
           </p>
           <div className="flex items-center space-x-2">
             <button
@@ -285,4 +220,4 @@ function Tableuser() {
   );
 }
 
-export default Tableuser;
+export default TableYear;

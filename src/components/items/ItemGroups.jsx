@@ -1,5 +1,5 @@
 import React from "react";
-import TableUser from "@/components/common/TableUser";
+import TableUser from "@/components/items/TableUser";
 
 export default function ItemGroups() {
   return (

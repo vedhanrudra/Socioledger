@@ -1,8 +1,10 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import ItemTable from "@/components/items/ItemTable"; 
+import ItemTable from "@/components/items/ItemTable";
 import ItemGroups from "@/components/items/ItemGroups";
 import ItemUnits from "@/components/items/ItemUnits";
+import Year from "@/components/years/TableYear";
+import Task from  "@/components/task/Task";
 const SectionCards = lazy(() => import("@/components/section-cards"));
 //const Tableuser = lazy(() => import("@/components/items/Tableuser"));
 
@@ -17,11 +19,15 @@ export function AppRoutes() {
         <Route path="/dashboard" element={<SectionCards />} />
 
         {/* Items */}
-      <Route path="/items/ItemTable" element={<ItemTable />} />
-      <Route path="/items/ItemGroups" element={<ItemGroups />} />
-      <Route path="/items/ItemUnits" element={<ItemUnits />} />
+        <Route path="/items/ItemTable" element={<ItemTable />} />
+        <Route path="/items/ItemGroups" element={<ItemGroups />} />
+        <Route path="/items/ItemUnits" element={<ItemUnits />} />
 
-      
+        {/* Years */}
+        <Route path="/years" element={<Year />} />
+        {/* task */}
+        <Route path="/task" element={<Task />} />
+        
 
         {/* Optional: 404 */}
         <Route
