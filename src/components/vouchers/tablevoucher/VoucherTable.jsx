@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState , useEffect  } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import {
   Table,
@@ -10,27 +10,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Link } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
-import AddItem from "../items/Additem";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ItemFilter from "@/components/items/FilterItem";
+import CreateForm from "@/components/common/CreateForm";
+import Filter from "@/components/common/ReuseFilter";
 
-// import { useDispatch, useSelector } from "react-redux";
-// import { Deleteuser } from "../store/userReducer";
-
-
-
-function Tableuser() {
-  // const userData = useSelector((state) => state.users);
-  // const dispatch = useDispatch();
+function VoucherTable() {
 
 const [addItemOpen, setAddItemOpen] = useState(false);
 
@@ -55,7 +46,6 @@ useEffect(() => {
   const [sortOrder, setSortOrder] = useState("asc");
   const recordsPerPage = 5;
 
-  // Sample data for demo
   const userData = [
     {
       id: 1,
@@ -113,12 +103,10 @@ useEffect(() => {
       status: "Active",
     },
   ];
-
-  const filteredUsers = (userData || []).filter((user) =>
+const filteredUsers = (userData || []).filter((user) =>
     (user?.name || "").toLowerCase().includes(filterText.toLowerCase())
   );
-
-  const sortedUsers = [...filteredUsers].sort((a, b) =>
+  const sortedUsers = [...userData].sort((a, b) =>
     sortOrder === "asc" ? a.id - b.id : b.id - a.id
   );
 
@@ -138,27 +126,22 @@ useEffect(() => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       console.log("Deleted ID:", id);
-      // dispatch(Deleteuser({ id }));
     }
   };
 
-  
-
   return (
     <div className="p-6">
-      {/* filter */}
       <div className="flex items-center justify-between mb-6">
         <div></div>
         <div className="flex items-center gap-2">
-          <ItemFilter
+          <Filter
             onApply={() => console.log("Applied")}
             onClear={() => console.log("Cleared")}
           />
-          <AddItem open={addItemOpen} setOpen={setAddItemOpen} />
+          <CreateForm open={addItemOpen} setOpen={setAddItemOpen} />
         </div>
       </div>
 
-      {/* Product Table */}
       <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <Table>
           <TableCaption>A list of your products.</TableCaption>
@@ -302,4 +285,4 @@ useEffect(() => {
   );
 }
 
-export default Tableuser;
+export default VoucherTable;

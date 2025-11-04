@@ -48,7 +48,7 @@ const data = {
       title: "Item",
       icon: Package,
       items: [
-        { title: "Items Table", url: "/items/ItemTable", icon: Package },
+        { title: "Items ", url: "/items/ItemTable", icon: Package },
         { title: "Items Groups", url: "/items/ItemGroups", icon: FileText },
         { title: "Items Units", url: "/items/ItemUnits", icon: FileSpreadsheet },
       ],
@@ -62,24 +62,24 @@ const data = {
     title: "Vouchers",
     icon: Receipt,
     items: [
-      { title: "Estimate", url: "#", icon: FileText },
-      { title: "Sales", url: "#", icon: ShoppingCart },
-      { title: "Sale Return", url: "#", icon: CreditCard },
-      { title: "Purchase", url: "#", icon: ShoppingCart },
-      { title: "Purchase Return", url: "#", icon: CreditCard },
-      { title: "Credit Note", url: "#", icon: FileText },
-      { title: "Debit Note", url: "#", icon: FileText },
-      { title: "Receipt Note", url: "#", icon: FileText },
-      { title: "Delivery Challans", url: "#", icon: FileText },
-      { title: "Opening", url: "#", icon: FileSpreadsheet },
+      { title: "Estimate", url: "/vouchers/Estimate", icon: FileText },
+      { title: "Sales", url: "/vouchers/Sales", icon: ShoppingCart },
+      { title: "Sale Return", url: "/vouchers/SalesReturn", icon: CreditCard },
+      { title: "Purchase", url: "/vouchers/Purchase", icon: ShoppingCart },
+      { title: "Purchase Return", url: "/vouchers/PurchaseReturn", icon: CreditCard },
+      { title: "CreditNote", url: "/vouchers/Credit", icon: FileText },
+      { title: "Debit Note", url: "/vouchers/Debit", icon: FileText },
+      { title: "Receipt Note", url: "/vouchers/Receipt", icon: FileText },
+      { title: "Delivery Challans", url: "/vouchers/DeliveryChallans", icon: FileText },
+      { title: "Opening", url: "/vouchers/Opening", icon: FileSpreadsheet },
     ],
   },
   {
     title: "Jobwork",
     icon: Briefcase,
     items: [
-      { title: "Material In", url: "#", icon: FileText },
-      { title: "Material Out", url: "#", icon: FileText },
+      { title: "Material In", url: "/jobwork/MaterialIn", icon: FileText },
+      { title: "Material Out", url: "/jobwork/MaterialOut", icon: FileText },
     ],
   },
   {
@@ -150,7 +150,7 @@ export function AppSidebar({ ...props }) {
   const [activeItem, setActiveItem] = React.useState(null);
 
   return (
-    <Sidebar {...props} className="bg-white-200 text-black w-72">
+    <Sidebar {...props} className="bg-blue-950 text-white w-72">
       {/* HEADER SECTION */}
       <SidebarHeader>
         <SidebarMenu>
@@ -165,7 +165,7 @@ export function AppSidebar({ ...props }) {
                   alt="SocioLedger Logo"
                   className="w-8 h-8 object-contain"
                 />
-                <span className="text-2xl font-bold text-black">
+                <span className="text-2xl font-bold text-white">
                   SocioLedger
                 </span>
               </Link>
@@ -193,7 +193,7 @@ export function AppSidebar({ ...props }) {
                           onClick={() => setActiveItem(item.title)}
                           className={`flex items-center gap-2 transition-colors ${
                             activeItem === item.title
-                              ? "bg-indigo-200 text-black"
+                              ? "bg-indigo-200 text-white"
                               : "hover:bg-gray-200"
                           }`}
                         >
@@ -220,12 +220,12 @@ export function AppSidebar({ ...props }) {
                                   onClick={() => setActiveItem(subItem.title)}
                                   className={`flex items-center gap-2 px-3 py-1 rounded-md transition-colors ${
                                     activeItem === subItem.title
-                                      ? "bg-indigo-200 text-black"
+                                      ? "bg-indigo-200 text-white"
                                       : "hover:bg-gray-200"
                                   }`}
                                 >
                                   {subItem.icon && (
-                                    <subItem.icon className="w-4 h-4 text-gray-400" />
+                                    <subItem.icon className="w-4 h-4 text-black" />
                                   )}
                                   <span>{subItem.title}</span>
                                 </Link>
@@ -241,7 +241,7 @@ export function AppSidebar({ ...props }) {
                       asChild
                       className={`flex items-center gap-2 transition-colors ${
                         activeItem === item.title
-                          ? "bg-indigo-200 text-black"
+                          ? "bg-indigo-200 text-white"
                           : "hover:bg-gray-200"
                       }`}
                     >
@@ -251,7 +251,7 @@ export function AppSidebar({ ...props }) {
                         className="flex items-center gap-2 w-full"
                       >
                         {item.icon && (
-                          <item.icon className="w-4 h-4 text-gray-400" />
+                          <item.icon className="w-4 h-4 text-white" />
                         )}
                         <span className="font-medium">{item.title}</span>
                       </Link>
