@@ -28,7 +28,7 @@ import ItemFilter from "@/components/items/FilterItem";
 
 
 
-function Tableuser() {
+function JobTable() {
   // const userData = useSelector((state) => state.users);
   // const dispatch = useDispatch();
 
@@ -302,4 +302,4 @@ useEffect(() => {
   );
 }
 
-export default Tableuser;
+export default JobTable;

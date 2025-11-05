@@ -13,6 +13,6 @@ export function Layout({ children }) {
           {children}
         </div>
       </SidebarInset>
-    </>
+    </> 
   );
 }

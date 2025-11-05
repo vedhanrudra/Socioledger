@@ -12,6 +12,10 @@ import {
   Ruler,
   Keyboard,
   LayoutDashboard,
+  ShoppingCart,
+  CreditCard,
+  Undo2,
+  Briefcase,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -34,11 +38,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 export function SiteHeader() {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
-   
-  
 
   // keyboard shortcuts
   useEffect(() => {
@@ -47,6 +49,10 @@ export function SiteHeader() {
       if (e.altKey && e.key.toLowerCase() === "f") {
         e.preventDefault(); // prevent browser's default find behavior
         setSearchOpen(true);
+      }
+      if (e.altKey && e.key.toLowerCase() === "A") {
+        e.preventDefault(); // prevent browser's default find behavior
+        setOpen(true);
       }
 
       // Escape closes the search dialog
@@ -86,7 +92,7 @@ export function SiteHeader() {
       case "/items/ItemTable":
         return {
           icon: <Package className="w-5 h-5 text-indigo-600" />,
-          title: "Items Table",
+          title: "Items",
           subtitle: "Manage and view all available items",
         };
 
@@ -113,19 +119,89 @@ export function SiteHeader() {
         };
 
       // 💰 Vouchers
-      case "/Vouchers":
+      case "/vouchers/Estimate":
         return {
           icon: <FileText className="w-5 h-5 text-indigo-600" />,
-          title: "Vouchers",
-          subtitle: "Manage all your transaction vouchers here",
+          title: "Estimate",
+          subtitle: "Create and manage customer estimates and quotations",
+        };
+
+      case "/vouchers/Sales":
+        return {
+          icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
+          title: "Sales",
+          subtitle: "Track product sales and customer invoices",
+        };
+
+      case "/vouchers/SalesReturn":
+        return {
+          icon: <CreditCard className="w-5 h-5 text-indigo-600" />,
+          title: "Sales Return",
+          subtitle: "Handle and record returned sales items",
+        };
+
+      case "/vouchers/Purchase":
+        return {
+          icon: <Package className="w-5 h-5 text-indigo-600" />,
+          title: "Purchase",
+          subtitle: "Manage supplier purchases and bills",
+        };
+
+      case "/vouchers/PurchaseReturn":
+        return {
+          icon: <Package className="w-5 h-5 text-indigo-600" />,
+          title: "Purchase Return",
+          subtitle: "Track returned goods and supplier adjustments",
+        };
+
+      case "/vouchers/Credit":
+        return {
+          icon: <FileText className="w-5 h-5 text-indigo-600" />,
+          title: "Credit Note",
+          subtitle: "Adjust sales invoices with issued credits",
+        };
+
+      case "/vouchers/Debit":
+        return {
+          icon: <FileText className="w-5 h-5 text-indigo-600" />,
+          title: "Debit Note",
+          subtitle: "Adjust purchases with debit entries",
+        };
+
+      case "/vouchers/Receipt":
+        return {
+          icon: <FileText className="w-5 h-5 text-indigo-600" />,
+          title: "Receipt Note",
+          subtitle: "Record received items or payments",
+        };
+
+      case "/vouchers/DeliveryChallans":
+        return {
+          icon: <FileText className="w-5 h-5 text-indigo-600" />,
+          title: "Delivery Challans",
+          subtitle: "Track goods delivery without invoices",
+        };
+
+      case "/vouchers/Opening":
+        return {
+          icon: <FileText className="w-5 h-5 text-indigo-600" />,
+          title: "Opening",
+          subtitle: "Initialize your accounts with opening balances",
         };
 
       // 🧰 Jobwork
-      case "/Jobwork":
+      case "/jobwork/MaterialIn":
         return {
           icon: <Briefcase className="w-5 h-5 text-indigo-600" />,
-          title: "Jobwork",
+          title: "Material In",
           subtitle: "Handle external job processes and work orders",
+        };
+
+      case "/jobwork/MaterialOut":
+        return {
+          icon: <Briefcase className="w-5 h-5 text-indigo-600" />,
+          title: "Material Out",
+          subtitle: "Manage outgoing materials and jobwork dispatches",
         };
 
       // 🛒 Orders
@@ -289,13 +365,86 @@ export function SiteHeader() {
           <Search className="w-5 h-5 text-gray-700" />
         </Button>
 
-        <div className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-yellow-400 shadow-lg">
-          <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-tr from-pink-500 via-purple-500 to-yellow-400 opacity-70 animate-pulse"></div>
-          <div className="relative z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 text-lg font-bold">
-              ✨
-            </span>
-          </div> 
+        {/* ✨ Glowing Button + Dialog */}
+        <div>
+          {/* Glowing Gradient Button */}
+          <button
+            onClick={() => setOpen(true)}
+            className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-yellow-400 shadow-lg hover:scale-105 transition-transform duration-200"
+          >
+            <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-tr from-pink-500 via-purple-500 to-yellow-400 opacity-70 animate-pulse"></div>
+            <div className="relative z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 text-lg font-bold">
+                ✨
+              </span>
+            </div>
+          </button>
+
+          {/* Dialog Popup */}
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="max-w-md rounded-2xl p-6">
+              <DialogHeader>
+                <DialogTitle className="text-center text-2xl font-semibold">
+                  What would you like to process?
+                </DialogTitle>
+                <p className="text-center text-gray-500 mt-1 text-sm">
+                  Select the type of document you want to analyze
+                </p>
+              </DialogHeader>
+
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                {[
+                  {
+                    title: "Direct Payment",
+                    desc: "Process payment transactions",
+                  },
+                  {
+                    title: "Receipt Payment",
+                    desc: "Process receipt documents",
+                  },
+                  {
+                    title: "Purchase",
+                    desc: "Process purchase invoices",
+                  },
+                  {
+                    title: "Business Card",
+                    desc: "Add new business contact",
+                  },
+                  {
+                    title: "Bank Statement",
+                    desc: "Reconcile bank statements",
+                  },
+                  {
+                    title: "Credit Card Statement",
+                    desc: "Process credit card statements",
+                  },
+                  {
+                    title: "Verify Ledger",
+                    desc: "Verify ledger entries",
+                  },
+                ].map((item, index) => (
+                  <button
+                    key={index}
+                    className="flex items-center gap-3 p-4 bg-white border rounded-xl hover:border-pink-400 hover:shadow-md transition-all"
+                  >
+                    <div className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-yellow-400">
+                      <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-tr from-pink-500 via-purple-500 to-yellow-400 opacity-60 animate-pulse"></div>
+                      <div className="relative z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white">
+                        <FileText className="w-4 h-4 text-pink-600" />
+                      </div>
+                    </div>
+
+                    <div className="text-left">
+                      <p className="text-sm font-semibold text-gray-800">
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-gray-500">{item.desc}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* profile */}

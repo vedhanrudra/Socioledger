@@ -15,9 +15,9 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { SlidersHorizontal, Trash2, Filter } from "lucide-react";
+import { SlidersHorizontal, Trash2 } from "lucide-react";
 
-function ItemFilter({ onApply, onClear }) {
+function Filter({ onApply, onClear }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -169,4 +169,4 @@ function ItemFilter({ onApply, onClear }) {
   );
 }
 
-export default ItemFilter;
+export default Filter;
