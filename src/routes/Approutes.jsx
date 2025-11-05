@@ -17,6 +17,25 @@ import DeliveryChallans from "@/components/vouchers/DeliveryChallans";
 import Opening from "@/components/vouchers/Opening";
 import MaterialIn from "@/components/jobwork/MaterialIn";
 import MaterialOut from "@/components/jobwork/MaterialOut";
+import OrderPurchase from "@/components/order/OrderPurchase";
+import OrderSales from "@/components/order/OrderSales";
+import Quotation from "@/components/quotation/Quotation";
+import Payments from "@/components/Payments/Payments";
+import Receipts from "@/components/Receipts/Receipts";
+import Ledgers from "@/components/ledgers/Ledgers";
+import LedgersGroup from "@/components/ledgers/LedgersGroup";
+import Transfer from "@/components/Transfer/Transfer";
+import LedgerReport from "@/components/reports/LedgerReport";
+import BalanceSheet from "@/components/reports/BalanceSheet";
+import CashFlow from "@/components/reports/CashFlow";
+import DayBook from "@/components/reports/DayBook";
+import ProfitLoss from "@/components/reports/ProfitLoss";
+import TrialBalance from "@/components/reports/TrialBalance";
+import Stock from "@/components/reports/Stock";
+import Voucher from "@/components/reports/Voucher";
+import DailyRegister from "@/components/reports/DailyRegister";
+import Ageing from "@/components/reports/Ageing";
+import TdsReport from "@/components/reports/TdsReport";
 const SectionCards = lazy(() => import("@/components/section-cards"));
 //const Tableuser = lazy(() => import("@/components/items/Tableuser"));
 
@@ -55,6 +74,41 @@ export function AppRoutes() {
         {/* Jobwork */}
         <Route path="/jobwork/MaterialIn" element={<MaterialIn/>} />
         <Route path="/jobwork/MaterialOut" element={<MaterialOut/>} />
+
+        {/* Order */}
+        <Route path="/order/OrderSales" element={<OrderSales/>} />
+        <Route path="/order/OrderPurchase" element={<OrderPurchase/>} />
+
+        {/* Quotations */}
+        <Route path="/quotation/Quotation" element={<Quotation/>} />
+
+        {/* Payments */}
+        <Route path="/Payments/Payments" element={<Payments/>} />
+
+        {/* Receipts */}
+        <Route path="/receipts/Receipts" element={<Receipts/>} />
+
+        {/* Ledgers */}
+        <Route path="/ledgers/Ledgers" element={<Ledgers/>} />
+        <Route path="/ledgers/LedgersGroup" element={<LedgersGroup/>} />
+
+        {/* Transfer */}
+        <Route path="/Transfer/Transfer" element={<Transfer/>} />
+
+        {/* Reports */}
+        <Route path="/reports/LedgerReport" element={<LedgerReport/>} />
+        <Route path="/reports/BalanceSheet" element={<BalanceSheet/>} />
+        <Route path="/reports/CashFlow" element={<CashFlow/>} />
+        <Route path="/reports/DayBook" element={<DayBook/>} />
+        <Route path="/reports/ProfitLoss" element={<ProfitLoss/>} />
+        <Route path="/reports/TrialBalance" element={<TrialBalance/>} />
+        <Route path="/reports/Stock" element={<Stock/>} />
+        <Route path="/reports/Voucher" element={<Voucher/>} />
+        <Route path="/reports/DailyRegister" element={<DailyRegister/>} />
+        <Route path="/reports/Ageing" element={<Ageing/>} />
+        <Route path="/reports/TdsReport" element={<TdsReport/>} />
+        
+
         {/* Optional: 404 */}
         <Route
           path="*"

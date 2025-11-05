@@ -86,49 +86,53 @@ const data = {
     title: "Order",
     icon: ShoppingCart,
     items: [
-      { title: "Order Purchase", url: "#", icon: FileText },
-      { title: "Order Sale", url: "#", icon: FileText },
+      { title: "Order Purchase", url: "/order/OrderPurchase", icon: FileText },
+      { title: "Order Sale", url: "/order/OrderSales", icon: FileText },
     ],
   },
   {
     title: "Quotations",
     icon: FileText,
+    url: "/quotation/Quotation",
   },
   {
     title: "Payments",
     icon: CreditCard,
+    url : "/Payments/Payments"
   },
   {
     title: "Receipts",
     icon: FileSpreadsheet,
+    url : "/receipts/Receipts"
   },
   {
     title: "Ledgers",
     icon: Users,
     items: [
-      { title: "Ledgers", url: "#", icon: Users },
-      { title: "Ledger Groups", url: "#", icon: FileText },
+      { title: "Ledgers", url: "/ledgers/Ledgers", icon: Users },
+      { title: "Ledger Groups", url: "/ledgers/LedgersGroup", icon: FileText },
     ],
   },
   {
     title: "Transfers",
     icon: PieChart,
+    url : "/Transfer/Transfer"
   },
   {
     title: "Reports",
     icon: FileText,
     items: [
-      { title: "Ledger Report", url: "#", icon: FileText },
-      { title: "Balance Sheet", url: "#", icon: FileSpreadsheet },
-      { title: "Cash Flow", url: "#", icon: PieChart },
-      { title: "Day Book", url: "#", icon: Calendar },
-      { title: "Profit & Loss", url: "#", icon: FileText },
-      { title: "Trial Balance", url: "#", icon: FileText },
-      { title: "Stock", url: "#", icon: Package },
-      { title: "Voucher", url: "#", icon: Receipt },
-      { title: "Daily Register", url: "#", icon: FileText },
-      { title: "Ageing", url: "#", icon: Calendar },
-      { title: "TDS Report", url: "#", icon: FileSpreadsheet },
+      { title: "Ledger Report", url: "/reports/LedgerReport", icon: FileText },
+      { title: "Balance Sheet", url: "/reports/BalanceSheet", icon: FileSpreadsheet },
+      { title: "Cash Flow", url: "/reports/CashFlow", icon: PieChart },
+      { title: "Day Book", url: "/reports/DayBook", icon: Calendar },
+      { title: "Profit & Loss", url: "/reports/ProfitLoss", icon: FileText },
+      { title: "Trial Balance", url: "/reports/TrialBalance", icon: FileText },
+      { title: "Stock", url: "/reports/Stock", icon: Package },
+      { title: "Voucher", url: "/reports/Voucher", icon: Receipt },
+      { title: "Daily Register", url: "/reports/DailyRegister", icon: FileText },
+      { title: "Ageing", url: "/reports/Ageing", icon: Calendar },
+      { title: "TDS Report", url: "/reports/TdsReport", icon: FileSpreadsheet },
     ],
   },
   {

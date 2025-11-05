@@ -16,6 +16,11 @@ import {
   CreditCard,
   Undo2,
   Briefcase,
+  Receipt,
+  Users,
+  Repeat,
+  BookOpen,
+  Clock,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -71,6 +76,36 @@ export function SiteHeader() {
     { name: "Items groups", path: "/items/ItemGroups" },
     { name: "Items units", path: "/items/ItemUnits" },
     { name: "Years", path: "/years" },
+    { name: "estimate", path: "/vouchers/Estimate" },
+    { name: "sales", path: "/vouchers/Sales" },
+    { name: "sales return", path: "/vouchers/SalesReturn" },
+    { name: "purchase", path: "/vouchers/Purchase" },
+    { name: "purchase return", path: "/vouchers/PurchaseReturn" },
+    { name: "credit note", path: "/vouchers/Credit" },
+    { name: "debit note", path: "/vouchers/Debit" },
+    { name: "receipt note", path: "/vouchers/Receipt" },
+    { name: "delivery challans", path: "/vouchers/DeliveryChallans" },
+    { name: "opening", path: "/vouchers/Opening"},
+    { name: "MaterialIn", path: "/jobwork/MaterialIn"},
+    { name: "MaterialOut", path: "/jobwork/MaterialOut"},
+    { name: "quotation", path: "/quotation/Quotation" },
+    { name: "payments", path: "/Payments/Payments" },
+    { name: "receipts", path: "/receipts/Receipts" },
+    { name: "ledgers", path: "/ledgers/Ledgers" },
+    { name: "ledgers Group", path: "/ledgers/LedgersGroup" },
+    { name: "Transfers", path: "/Transfer/Transfer" },
+    { name: "ledger report", path: "/reports/LedgerReport" },
+    { name: "Balance sheet", path: "/reports/BalanceSheet" },
+    { name: "trial balance", path: "/reports/TrialBalance" },
+    { name: "cash flow", path: "/reports/CashFlow" },
+    { name: "day book", path: "/reports/DayBook" },
+    { name: "profit and loss", path: "/reports/ProfitLoss" },
+    { name: "stock", path: "/reports/Stock" },
+    { name: "voucher", path: "/reports/Voucher" },
+    { name: "daily register", path: "/reports/DailyRegister" },
+    { name: "ageing", path: "/reports/Ageing" },
+    { name: "tds report", path: "/reports/TdsReport" },
+    { name: "task", path: "/task" },
   ];
 
   const filteredRoutes = routes.filter(
@@ -205,15 +240,22 @@ export function SiteHeader() {
         };
 
       // 🛒 Orders
-      case "/Order":
+      case "/order/OrderPurchase":
         return {
           icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
-          title: "Orders",
+          title: "Order Purchase",
+          subtitle: "View and manage all customer orders",
+        };
+
+      case "/order/OrderSales":
+        return {
+          icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
+          title: "Order Sales",
           subtitle: "View and manage all customer orders",
         };
 
       // 📑 Quotations
-      case "/Quotations":
+      case "/quotation/Quotation":
         return {
           icon: <FileText className="w-5 h-5 text-indigo-600" />,
           title: "Quotations",
@@ -221,21 +263,15 @@ export function SiteHeader() {
         };
 
       // 💳 Payments
-      case "/Payments":
+      case "/Payments/Payments":
         return {
           icon: <CreditCard className="w-5 h-5 text-indigo-600" />,
           title: "Payments",
           subtitle: "Track customer and vendor payments",
         };
-      case "/Task":
-        return {
-          icon: <FileText className="w-5 h-5 text-indigo-600" />,
-          title: "Task",
-          subtitle: "View and manage your tasks",
-        };
 
-      // 🧾 Receipts
-      case "/Receipts":
+         // 🧾 Receipts
+      case "/receipts/Receipts":
         return {
           icon: <Receipt className="w-5 h-5 text-indigo-600" />,
           title: "Receipts",
@@ -243,15 +279,22 @@ export function SiteHeader() {
         };
 
       // 👥 Ledgers
-      case "/Ledgers":
+      case "/ledgers/Ledgers":
         return {
           icon: <Users className="w-5 h-5 text-indigo-600" />,
           title: "Ledgers",
           subtitle: "Manage account ledgers and financial records",
         };
 
+        case "/ledgers/LedgersGroup":
+        return {
+          icon: <Users className="w-5 h-5 text-indigo-600" />,
+          title: "Ledgers Group",
+          subtitle: "Manage account ledgers and financial records",
+        };
+
       // 🔁 Transfers
-      case "/Transfers":
+      case "/Transfer/Transfer":
         return {
           icon: <Repeat className="w-5 h-5 text-indigo-600" />,
           title: "Transfers",
@@ -259,12 +302,82 @@ export function SiteHeader() {
         };
 
       // 📊 Reports
-      case "/Reports":
-        return {
-          icon: <BarChart className="w-5 h-5 text-indigo-600" />,
-          title: "Reports",
-          subtitle: "Analyze data through detailed reports",
-        };
+      case "/reports/LedgerReport":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Ledger Report",
+        subtitle: "View account-wise ledger details",
+      };
+
+    case "/reports/BalanceSheet":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Balance Sheet",
+        subtitle: "Check assets, liabilities, and equity summary",
+      };
+
+    case "/reports/CashFlow":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Cash Flow",
+        subtitle: "Track inflow and outflow of cash",
+      };
+
+    case "/reports/DayBook":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Day Book",
+        subtitle: "See all daily financial transactions",
+      };
+
+    case "/reports/ProfitLoss":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Profit & Loss",
+        subtitle: "Monitor revenue and expenses summary",
+      };
+
+    case "/reports/TrialBalance":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Trial Balance",
+        subtitle: "Verify debit and credit balances",
+      };
+
+    case "/reports/Stock":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Stock Report",
+        subtitle: "Check available inventory and stock movements",
+      };
+
+    case "/reports/Voucher":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Voucher Report",
+        subtitle: "View all voucher transactions and entries",
+      };
+
+    case "/reports/DailyRegister":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Daily Register",
+        subtitle: "Track daily business activities and records",
+      };
+
+    case "/reports/Ageing":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Ageing Report",
+        subtitle: "Analyze outstanding receivables and payables",
+      };
+
+    case "/reports/TdsReport":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "TDS Report",
+        subtitle: "Review tax deducted at source details",
+      };
 
       // 💼 GST
       case "/GST":
@@ -280,6 +393,14 @@ export function SiteHeader() {
           icon: <Users className="w-5 h-5 text-indigo-600" />,
           title: "Team",
           subtitle: "Manage your organization’s members and roles",
+        };
+
+      // 📝 task
+        case "/Task":
+        return {
+          icon: <FileText className="w-5 h-5 text-indigo-600" />,
+          title: "Task",
+          subtitle: "View and manage your tasks",
         };
 
       // 🧩 Default
