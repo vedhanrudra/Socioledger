@@ -1,52 +1,228 @@
-import React from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { useState,useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,   
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import { Check, Package, Settings, Pencil } from "lucide-react"
+import { cn } from "@/lib/utils"
 
-export default function CreateForm({ open, setOpen }) {
-  return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button className="ml-auto bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-          + Add item
-        </Button>
-      </SheetTrigger>
+export default function Form( {open, onOpenChange, data}) {
+    const isEditMode = Boolean(data);
 
-      <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-center">
-        <SheetHeader>
-          <SheetTitle>Create New item</SheetTitle>
-        </SheetHeader>
+    const [name, setName] = useState("")
+    const [group, setGroup] = useState("")
+    const [type, setType] = useState("")
+    const [hsn, setHsn] = useState("")
+    const [unit, setUnit] = useState("")
+    const [status, setStatus] = useState("")
+    const [errors, setErrors] = useState({})
 
-        <form className="mt-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input
-              type="text"
-              className="w-full border rounded-md p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter product name"
-            />
-          </div>
+    const groups = ["Primary"]
+    const types = ["Goods", "Services"]
+    const units = ["Pcs"]
+    const statuses = ["Active", "Inactive"]
 
-          <div>
-            <label className="block text-sm font-medium">Items group</label>
-            <input
-              type="number"
-              className="w-full border rounded-md p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter price"
-            />
-          </div>
+    const validateForm = () => {
+        const newErrors = {}
+        if (!name) newErrors.name = "Name is required"
+        if (!group) newErrors.group = "Group is required"
+        if (!type) newErrors.type = "Type is required"
+        if (!hsn) newErrors.hsn = "HSN/SAC Code is required"
+        if (!unit) newErrors.unit = "Unit is required"
+        if (!status) newErrors.status = "Status is required"
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
 
-          <div>
-            <label className="block text-sm font-medium">Type</label>
-            <input
-              type="number"
-              className="w-full border rounded-md p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter quantity"
-            />
-          </div>
+    useEffect(() => {
+        if(data){
+            setName(data.name || "");
+            setGroup(data.group || "");
+            setType(data.type || "");
+            setHsn(data.hsn || "");
+            setUnit(data.unit || "");
+            setStatus(data.status || "");
+                }
+                else
+                {
+                    setName("");
+                    setGroup("");
+                    setType("");
+                    setHsn("");
+                    setUnit("");
+                    setStatus("");
+                }
+    }, [data,open]);
 
-          <Button className="w-full mt-4">Save Product</Button>
-        </form>
-      </SheetContent>
-    </Sheet>
-  );
+
+    const handleSave = () => {
+        if (validateForm()) {
+            if(isEditMode){
+                alert('✅ Item submitted successfully!');
+            }
+        else{
+            alert('✅ Item created successfully!');
+            }
+            onOpenChange(false);
+        }
+    };
+
+    return (
+        <Sheet onOpenChange={onOpenChange} open={open}>
+            {!isEditMode&&(
+            <SheetTrigger asChild>
+                <Button className="flex items-center gap-2 bg-blue-700 hover:bg-blue-500 py-2 px-4 text-white font-semibold rounded transition">
+                    <Package className="w-5 h-5" />
+                    Create New Item
+                </Button>
+            </SheetTrigger>
+            )}
+            <SheetContent className="sm:max-w-[480px] overflow-y-auto">
+                <SheetHeader className="flex flex-col gap-1">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                            {isEditMode ?  (
+                                <Pencil className="w-8 h-8 text-blue-700" />
+                            ):(
+                                    <Package className="w-8 h-8 text-blue-700" />
+                            )}
+                            <div>
+                                <SheetTitle>{isEditMode ? "Edit items" : "create new item"}</SheetTitle>
+                                <SheetDescription>
+                                    {isEditMode ?  "modified the details below to update the item." : "Fill in the details below to create a new item."}
+                                </SheetDescription>
+                            </div>
+                        </div>
+
+                        <Settings className="w-5 h-5 text-black mt-7 cursor-pointer" />
+                    </div>
+                </SheetHeader>
+
+
+                <div className="mt-6 space-y-5">
+                    <div className="grid gap-2">
+                        <Label htmlFor="name">
+                            Name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            id="name"
+                            placeholder="Enter item name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                    </div>
+
+                    
+                    <Dropdown
+                        label="Item Group"
+                        value={group}
+                        setValue={setGroup}
+                        options={groups}
+                        error={errors.group}
+                    />
+
+                    
+                    <Dropdown
+                        label="Type"
+                        value={type}
+                        setValue={setType}
+                        options={types}
+                        error={errors.type}
+                    />
+
+                    
+                    <div className="grid gap-2">
+                        <Label htmlFor="hsn">HSN/SAC Code</Label>
+                        <Input
+                            id="hsn"
+                            placeholder="Enter HSN/SAC Code"
+                            value={hsn}
+                            onChange={(e) => setHsn(e.target.value)}
+                        />
+                    </div>
+
+                    
+                    <Dropdown
+                        label="Unit"
+                        value={unit}
+                        setValue={setUnit}
+                        options={units}
+                        error={errors.unit}
+                    />
+
+                    
+                    <Dropdown
+                        label="Status"
+                        value={status}
+                        setValue={setStatus}
+                        options={statuses}
+                        error={errors.status}
+                    />
+                </div>
+
+                <SheetFooter className="flex justify-end gap-3 mt-4">
+                    <Button onClick={handleSave} className="bg-blue-700 hover:bg-blue-500 text-white">
+                        {isEditMode ? "💾 Update" : "✅ Save"}
+                    </Button>
+                    <SheetClose asChild>
+                        <Button variant="outline">❎ Close</Button>
+                    </SheetClose>
+                </SheetFooter>
+            </SheetContent>
+        </Sheet>
+    )
+
+
+function Dropdown({ label, value, setValue, options, error }) {
+    return (
+        <div className="grid gap-2">
+            <Label>
+                {label} <span className="text-red-500">*</span>
+            </Label>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                        {value ||` Select ${label}`}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[250px] p-0">
+                    <Command>
+                        <CommandInput placeholder={`Search ${label.toLowerCase()}...`} />
+                        <CommandList>
+                            <CommandEmpty>No result found.</CommandEmpty>
+                            <CommandGroup>
+                                {options.map((opt) => (
+                                    <CommandItem key={opt} onSelect={() => setValue(opt)}>
+                                        <Check className={cn("mr-2 h-4 w-4", value === opt ? "opacity-100" : "opacity-0")} />
+                                        {opt}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+        </div>
+    )
+}
 }
