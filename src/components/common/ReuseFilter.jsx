@@ -1,4 +1,7 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter } from "@/redux/voucherSlice";
+
 import {
   Dialog,
   DialogContent,
@@ -18,6 +21,22 @@ import {
 import { SlidersHorizontal, Trash2 } from "lucide-react";
 
 function Filter({ onApply, onClear }) {
+  const dispatch = useDispatch();
+  const currentFilter = useSelector((state) => state.voucher.filter);
+
+  const [filterValues, setFilterValues] = React.useState(currentFilter);
+
+  const handleApply = () => {
+    dispatch(setFilter(filterValues)); // ✅ Save to Redux
+    if (onApply) onApply();
+  };
+
+  const handleClear = () => {
+    setFilterValues({});
+    dispatch(setFilter({}));
+    if (onClear) onClear();
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -33,7 +52,7 @@ function Filter({ onApply, onClear }) {
       <DialogContent className="max-w-3xl rounded-2xl p-6">
         <DialogHeader className="mb-4">
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-orange-500" />
+            <SlidersHorizontal className="w-5 h-5 text-orange-500" />
             <DialogTitle className="text-lg font-semibold text-gray-800">
               Item Filters
             </DialogTitle>
@@ -45,7 +64,13 @@ function Filter({ onApply, onClear }) {
           {/* Name */}
           <div className="space-y-1">
             <label className="text-sm font-medium text-gray-700">Name</label>
-            <Input placeholder="Search by name" />
+            <Input
+              placeholder="Search by name"
+              value={filterValues.name || ""}
+              onChange={(e) =>
+                setFilterValues({ ...filterValues, name: e.target.value })
+              }
+            />
           </div>
 
           {/* Group */}
@@ -86,7 +111,9 @@ function Filter({ onApply, onClear }) {
 
           {/* GST Rate */}
           <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">GST Rate</label>
+            <label className="text-sm font-medium text-gray-700">
+              GST Rate
+            </label>
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Select Gst Rate" />
@@ -150,14 +177,14 @@ function Filter({ onApply, onClear }) {
         <div className="flex justify-end items-center gap-3 pt-4 border-t mt-4">
           <Button
             variant="outline"
-            onClick={onClear}
+            onClick={handleClear} // ✅ use your function
             className="flex items-center gap-1 text-gray-600"
           >
             <Trash2 className="w-4 h-4" />
             Clear
           </Button>
           <Button
-            onClick={onApply}
+            onClick={handleApply} // ✅ use your function
             className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-1"
           >
             <SlidersHorizontal className="w-4 h-4" />
