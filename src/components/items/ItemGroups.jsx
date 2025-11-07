@@ -1,10 +1,10 @@
 import React from "react";
-import TableUser from "@/components/items/TableUser";
+import TableGroup from "@/components/items/TableGroup";
 
 export default function ItemGroups() {
   return (
     <div className="p-6">
-      <TableUser />
+      <TableGroup />
     </div>
   );
 }

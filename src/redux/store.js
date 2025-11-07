@@ -1,29 +1,30 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // Uses localStorage
+import storage from "redux-persist/lib/storage"; // uses localStorage
 
-import voucherReducer from "./voucherSlice";
-import itemsReducer from "./itemsSlice"; // ✅ fixed filename + removed trailing /
+import itemsReducer from "./itemsSlice";
+import itemGroupsReducer from "./itemGroupsSlice";
 
-/* 1️⃣ Combine reducers (add more slices here later) */
+/* 1️⃣ Combine reducers */
 const rootReducer = combineReducers({
-  voucher: voucherReducer,
   items: itemsReducer,
+  itemGroups: itemGroupsReducer,
 });
 
 /* 2️⃣ Persist config */
 const persistConfig = {
   key: "root", // key name in localStorage
-  storage,     // uses localStorage
+  storage,
 };
 
-/* 3️⃣ Wrap your root reducer with persistReducer */
+/* 3️⃣ Wrap combined reducer */
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 /* 4️⃣ Create store */
 export const store = configureStore({
   reducer: persistedReducer,
+  devTools: process.env.NODE_ENV !== "production",
 });
 
-/* 5️⃣ Create persistor to control persistence lifecycle */
+/* 5️⃣ Create persistor */
 export const persistor = persistStore(store);

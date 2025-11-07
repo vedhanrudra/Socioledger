@@ -1,6 +1,7 @@
+"use client";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter } from "@/redux/voucherSlice";
+import { setFilter } from "@/redux/itemsSlice"; // ✅ use itemsSlice
 
 import {
   Dialog,
@@ -20,25 +21,30 @@ import {
 } from "@/components/ui/select";
 import { SlidersHorizontal, Trash2 } from "lucide-react";
 
-function Filter({ onApply, onClear }) {
+export default function Filter({ onApply, onClear }) {
   const dispatch = useDispatch();
-  const currentFilter = useSelector((state) => state.voucher.filter);
+  const currentFilter = useSelector((state) => state.items.filter);
 
   const [filterValues, setFilterValues] = React.useState(currentFilter);
-
   const [open, setOpen] = React.useState(false);
-  const handleApply = () => {
-    dispatch(setFilter(filterValues)); // ✅ Save to Redux
-    if (onApply) onApply();
 
+  const handleApply = () => {
+    dispatch(setFilter(filterValues)); // ✅ save filter in Redux
+    if (onApply) onApply();
     setOpen(false);
   };
 
   const handleClear = () => {
-    setFilterValues({});
-    dispatch(setFilter({}));
+    const cleared = { name: "", type: "", status: "" };
+    setFilterValues(cleared);
+    dispatch(setFilter(cleared)); // ✅ reset Redux filter
     if (onClear) onClear();
   };
+
+  // keep local filter synced with redux
+  React.useEffect(() => {
+    setFilterValues(currentFilter);
+  }, [currentFilter]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -76,71 +82,22 @@ function Filter({ onApply, onClear }) {
             />
           </div>
 
-          {/* Group */}
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">Group</label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select group" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="group1">Group 1</SelectItem>
-                <SelectItem value="group2">Group 2</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Type */}
           <div className="space-y-1">
             <label className="text-sm font-medium text-gray-700">Type</label>
-            <Select>
+            <Select
+              value={filterValues.type || ""}
+              onValueChange={(value) =>
+                setFilterValues({ ...filterValues, type: value })
+              }
+            >
               <SelectTrigger>
-                <SelectValue placeholder="Select Type" />
+                <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="goods">Goods</SelectItem>
-                <SelectItem value="service">Service</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* HSN/SAC Code */}
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">
-              HSN/SAC Code
-            </label>
-            <Input placeholder="Search by HSN/SAC Code" />
-          </div>
-
-          {/* GST Rate */}
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">
-              GST Rate
-            </label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Gst Rate" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5%</SelectItem>
-                <SelectItem value="12">12%</SelectItem>
-                <SelectItem value="18">18%</SelectItem>
-                <SelectItem value="28">28%</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Unit */}
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">Unit</label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select unit" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pcs">Pieces</SelectItem>
-                <SelectItem value="kg">Kilograms</SelectItem>
-                <SelectItem value="ltr">Litres</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="Goods">Goods</SelectItem>
+                <SelectItem value="Services">Services</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -148,29 +105,19 @@ function Filter({ onApply, onClear }) {
           {/* Status */}
           <div className="space-y-1">
             <label className="text-sm font-medium text-gray-700">Status</label>
-            <Select>
+            <Select
+              value={filterValues.status || ""}
+              onValueChange={(value) =>
+                setFilterValues({ ...filterValues, status: value })
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Want Stock */}
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">
-              Want Stock
-            </label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Want Stock" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="yes">Yes</SelectItem>
-                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -180,14 +127,14 @@ function Filter({ onApply, onClear }) {
         <div className="flex justify-end items-center gap-3 pt-4 border-t mt-4">
           <Button
             variant="outline"
-            onClick={handleClear} // ✅ use your function
+            onClick={handleClear}
             className="flex items-center gap-1 text-gray-600"
           >
             <Trash2 className="w-4 h-4" />
             Clear
           </Button>
           <Button
-            onClick={handleApply} // ✅ use your function
+            onClick={handleApply}
             className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-1"
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -198,5 +145,3 @@ function Filter({ onApply, onClear }) {
     </Dialog>
   );
 }
-
-export default Filter;
