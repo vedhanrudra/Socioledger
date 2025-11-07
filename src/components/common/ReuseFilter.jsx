@@ -26,9 +26,12 @@ function Filter({ onApply, onClear }) {
 
   const [filterValues, setFilterValues] = React.useState(currentFilter);
 
+  const [open, setOpen] = React.useState(false);
   const handleApply = () => {
     dispatch(setFilter(filterValues)); // ✅ Save to Redux
     if (onApply) onApply();
+
+    setOpen(false);
   };
 
   const handleClear = () => {
@@ -38,7 +41,7 @@ function Filter({ onApply, onClear }) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"

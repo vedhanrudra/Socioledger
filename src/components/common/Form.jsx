@@ -30,9 +30,8 @@ import {
 import { Check, Package, Settings, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function Form({ open, onOpenChange, data }) {
+export default function Form({ open, onOpenChange, data, onSubmit }) {
   const dispatch = useDispatch();
-
   const isEditMode = Boolean(data);
 
   const [name, setName] = useState("");
@@ -41,12 +40,16 @@ export default function Form({ open, onOpenChange, data }) {
   const [hsn, setHsn] = useState("");
   const [unit, setUnit] = useState("");
   const [status, setStatus] = useState("");
+  const [photo, setPhoto] = useState(null);
+  const [wantStock, setWantStock] = useState("");
+  const [minQty, setMinQty] = useState("");
   const [errors, setErrors] = useState({});
 
   const groups = ["Primary"];
   const types = ["Goods", "Services"];
   const units = ["Pcs"];
   const statuses = ["Active", "Inactive"];
+  const stockOptions = ["Yes", "No"];
 
   const validateForm = () => {
     const newErrors = {};
@@ -56,6 +59,12 @@ export default function Form({ open, onOpenChange, data }) {
     if (!hsn) newErrors.hsn = "HSN/SAC Code is required";
     if (!unit) newErrors.unit = "Unit is required";
     if (!status) newErrors.status = "Status is required";
+
+    if (type === "Goods") {
+      if (!wantStock) newErrors.wantStock = "Please select stock preference";
+      if (!minQty) newErrors.minQty = "Minimum Quantity is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -68,6 +77,9 @@ export default function Form({ open, onOpenChange, data }) {
       setHsn(data.hsn || "");
       setUnit(data.unit || "");
       setStatus(data.status || "");
+      setPhoto(data.photo || null);
+      setWantStock(data.wantStock || "");
+      setMinQty(data.minQty || "");
     } else {
       setName("");
       setGroup("");
@@ -75,27 +87,30 @@ export default function Form({ open, onOpenChange, data }) {
       setHsn("");
       setUnit("");
       setStatus("");
+      setPhoto(null);
+      setWantStock("");
+      setMinQty("");
     }
   }, [data, open]);
 
   const handleSave = () => {
   if (validateForm()) {
     const formData = {
-      id: data?.id || Date.now(), // generate unique id for new entries
+      id: data?.id || Date.now(),
       name,
       group,
       type,
       hsn,
       unit,
       status,
+      photo,
+      wantStock,
+      minQty,
     };
 
-    if (isEditMode) {
-      dispatch(updateVoucher(formData));
-      alert("✅ Item updated successfully!");
-    } else {
-      dispatch(addVoucher(formData));
-      alert("✅ Item created successfully!");
+    // ✅ Call the parent onSubmit instead of dispatching here
+    if (typeof onSubmit === "function") {
+      onSubmit(formData);
     }
 
     onOpenChange(false);
@@ -124,21 +139,21 @@ export default function Form({ open, onOpenChange, data }) {
               )}
               <div>
                 <SheetTitle>
-                  {isEditMode ? "Edit items" : "create new item"}
+                  {isEditMode ? "Edit Item" : "Create New Item"}
                 </SheetTitle>
                 <SheetDescription>
                   {isEditMode
-                    ? "modified the details below to update the item."
+                    ? "Modify details below to update the item."
                     : "Fill in the details below to create a new item."}
                 </SheetDescription>
               </div>
             </div>
-
             <Settings className="w-5 h-5 text-black mt-7 cursor-pointer" />
           </div>
         </SheetHeader>
 
         <div className="mt-6 space-y-5">
+          {/* Name */}
           <div className="grid gap-2">
             <Label htmlFor="name">
               Name <span className="text-red-500">*</span>
@@ -154,6 +169,7 @@ export default function Form({ open, onOpenChange, data }) {
             )}
           </div>
 
+          {/* Group */}
           <Dropdown
             label="Item Group"
             value={group}
@@ -162,6 +178,7 @@ export default function Form({ open, onOpenChange, data }) {
             error={errors.group}
           />
 
+          {/* Type */}
           <Dropdown
             label="Type"
             value={type}
@@ -170,6 +187,21 @@ export default function Form({ open, onOpenChange, data }) {
             error={errors.type}
           />
 
+          {/* Photo */}
+          {type === "Goods" && (
+            <div className="space-y-4 border-t pt-4 mt-2">
+              <div className="grid gap-2">
+                <Label>Photo</Label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setPhoto(e.target.files[0])}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* HSN */}
           <div className="grid gap-2">
             <Label htmlFor="hsn">HSN/SAC Code</Label>
             <Input
@@ -180,6 +212,7 @@ export default function Form({ open, onOpenChange, data }) {
             />
           </div>
 
+          {/* Unit */}
           <Dropdown
             label="Unit"
             value={unit}
@@ -188,6 +221,39 @@ export default function Form({ open, onOpenChange, data }) {
             error={errors.unit}
           />
 
+          {/* Conditional fields appear when type === "Goods" */}
+          {type === "Goods" && (
+            <div className="space-y-4 border-t pt-4 mt-2">
+             
+
+              {/* Want Stock */}
+              <Dropdown
+                label="Want Stock"
+                value={wantStock}
+                setValue={setWantStock}
+                options={stockOptions}
+                error={errors.wantStock}
+              />
+
+              {/* Minimum Quantity */}
+              <div className="grid gap-2">
+                <Label>
+                  Minimum Quantity <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="number"
+                  value={minQty}
+                  onChange={(e) => setMinQty(e.target.value)}
+                  placeholder="Enter minimum quantity"
+                />
+                {errors.minQty && (
+                  <p className="text-red-500 text-sm">{errors.minQty}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Status */}
           <Dropdown
             label="Status"
             value={status}
@@ -197,6 +263,7 @@ export default function Form({ open, onOpenChange, data }) {
           />
         </div>
 
+        {/* Footer */}
         <SheetFooter className="flex justify-end gap-3 mt-4">
           <Button
             onClick={handleSave}
@@ -212,6 +279,7 @@ export default function Form({ open, onOpenChange, data }) {
     </Sheet>
   );
 
+  // Reusable dropdown component
   function Dropdown({ label, value, setValue, options, error }) {
     return (
       <div className="grid gap-2">

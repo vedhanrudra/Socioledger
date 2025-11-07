@@ -1,305 +1,198 @@
-import React, { useState, useEffect } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Link } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { FiEdit } from "react-icons/fi";
-import AddItem from "../items/Additem";
+"use client";
+
+import * as React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addItem, updateItem, deleteItem, setItems } from "@/redux/itemsSlice"; // ✅ Changed import
+import ReusableTable from "@/components/common/ReusableTable";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import ItemFilter from "@/components/items/FilterItem";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import Form from "@/components/common/Form";
+import Filter from "@/components/common/ReuseFilter";
 
-// import { useDispatch, useSelector } from "react-redux";
-// import { Deleteuser } from "../store/userReducer";
+export default function TableUser() {
+  const dispatch = useDispatch();
 
+  const loading = useSelector((state) => state.items.loading); // ✅ items instead of voucher
+  const items = useSelector((state) => state.items.list); // ✅
+  const filter = useSelector((state) => state.items.filter); // ✅
 
+  const [editData, setEditData] = React.useState(null);
+  const [isFormOpen, setIsFormOpen] = React.useState(false);
 
-function Tableuser() {
-  // const userData = useSelector((state) => state.users);
-  // const dispatch = useDispatch();
+  const filteredData = React.useMemo(() => {
+    return items.filter((item) => {
+      const matchesName = filter.name
+        ? item.name.toLowerCase().includes(filter.name.toLowerCase())
+        : true;
+      const matchesType = filter.type ? item.type === filter.type : true;
+      const matchesStatus = filter.status
+        ? item.status === filter.status
+        : true;
+      return matchesName && matchesType && matchesStatus;
+    });
+  }, [items, filter]);
 
-const [addItemOpen, setAddItemOpen] = useState(false);
+ const columns = React.useMemo(
+  () => [
+    { accessorKey: "group", header: "Group" },
+    { accessorKey: "name", header: "Name" },
+    { accessorKey: "type", header: "Type" },
+    { accessorKey: "hsn", header: "HSN/SAC Code" },
+    { accessorKey: "unit", header: "Unit" },
 
-useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (e.altKey && e.key.toLowerCase() === "a") {
-      e.preventDefault();
-      setAddItemOpen(true); // open AddItem sheet
-    }
-
-    if (e.key === "Escape") {
-      setAddItemOpen(false); // close sheet with Esc
-    }
-  };
-
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, []);
-
-  const [filterText, setFilterText] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState("asc");
-  const recordsPerPage = 5;
-
-  // Sample data for demo
-  const userData = [
+    // ✅ Want Stock field (was 'stock')
     {
-      id: 1,
-      group: "Beverages",
-      name: "Green Tea",
-      types: "Food & Drink",
-      hsn: "0902",
-      gst: "5%",
-      unit: "Box",
-      wantStock: "Yes",
-      status: "Active",
+      accessorKey: "wantStock",
+      header: "Want Stock",
+      cell: ({ row }) => (
+        <span
+          className={`px-2 py-1 text-xs font-semibold rounded-full ${
+            row.getValue("wantStock") === "Yes"
+              ? "bg-green-100 text-green-700"
+              : "bg-gray-100 text-gray-600"
+          }`}
+        >
+          {row.getValue("wantStock")}
+        </span>
+      ),
     },
+
+    // ✅ Minimum Quantity
     {
-      id: 2,
-      group: "Stationery",
-      name: "Notebook A5",
-      types: "Office Supply",
-      hsn: "4820",
-      gst: "12%",
-      unit: "Piece",
-      wantStock: "No",
-      status: "Active",
+      accessorKey: "minQty",
+      header: "Min. Qty",
+      cell: ({ row }) => <span>{row.getValue("minQty") || "-"}</span>,
     },
+
+    // ✅ Photo (optional preview)
     {
-      id: 3,
-      group: "Electronics",
-      name: "LED Bulb 9W",
-      types: "Electrical",
-      hsn: "8539",
-      gst: "18%",
-      unit: "Piece",
-      wantStock: "Yes",
-      status: "Active",
+      accessorKey: "photo",
+      header: "Photo",
+      cell: ({ row }) => {
+        const file = row.getValue("photo");
+        if (!file) return <span className="text-gray-400">No Photo</span>;
+
+        // Handle both File objects and string URLs
+        const src =
+          typeof file === "string"
+            ? file
+            : URL.createObjectURL(file);
+
+        return (
+          <img
+            src={src}
+            alt="Item"
+            className="w-10 h-10 rounded object-cover border"
+          />
+        );
+      },
     },
+
+    // ✅ Status field
     {
-      id: 4,
-      group: "Personal Care",
-      name: "Shampoo 200ml",
-      types: "Cosmetics",
-      hsn: "3305",
-      gst: "18%",
-      unit: "Bottle",
-      wantStock: "Yes",
-      status: "Inactive",
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status");
+        const color =
+          status === "Active"
+            ? "bg-green-100 text-green-700"
+            : "bg-red-100 text-red-700";
+        return (
+          <span
+            className={`px-2 py-1 text-xs font-semibold rounded-full ${color}`}
+          >
+            {status}
+          </span>
+        );
+      },
     },
+
+    // ✅ Actions
     {
-      id: 5,
-      group: "Grocery",
-      name: "Basmati Rice",
-      types: "Food Grain",
-      hsn: "1006",
-      gst: "5%",
-      unit: "Kg",
-      wantStock: "Yes",
-      status: "Active",
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-gray-100 focus:ring-2 focus:ring-blue-200"
+            >
+              <MoreVertical className="h-4 w-4 text-black" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            align="end"
+            className="w-36 shadow-md border border-gray-100"
+          >
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                setEditData(row.original);
+                setIsFormOpen(true);
+              }}
+              className="flex items-center gap-2 cursor-pointer hover:bg-blue-50 text-blue-600"
+            >
+              <Pencil className="w-4 h-4 text-blue-600" />
+              <span>Edit</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => dispatch(deleteItem(row.original.id))}
+              className="flex items-center gap-2 cursor-pointer hover:bg-red-50 text-red-600"
+            >
+              <Trash2 className="w-4 h-4 text-red-500" />
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
     },
-  ];
+  ],
+  [dispatch]
+);
 
-  const filteredUsers = (userData || []).filter((user) =>
-    (user?.name || "").toLowerCase().includes(filterText.toLowerCase())
-  );
-
-  const sortedUsers = [...filteredUsers].sort((a, b) =>
-    sortOrder === "asc" ? a.id - b.id : b.id - a.id
-  );
-
-  const lastIndex = currentPage * recordsPerPage;
-  const firstIndex = lastIndex - recordsPerPage;
-  const currentRecords = sortedUsers.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(sortedUsers.length / recordsPerPage);
-
-  const goToPage = (page) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
-
-  const handleSort = () => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      console.log("Deleted ID:", id);
-      // dispatch(Deleteuser({ id }));
-    }
-  };
-
-  
 
   return (
-    <div className="p-6">
-      {/* filter */}
-      <div className="flex items-center justify-between mb-6">
-        <div></div>
-        <div className="flex items-center gap-2">
-          <ItemFilter
-            onApply={() => console.log("Applied")}
-            onClear={() => console.log("Cleared")}
+    <ReusableTable
+      columns={columns}
+      data={filteredData}
+      loading={loading}
+      pageSize={10}
+      emptyMessage="No items found."
+      toolbarRight={
+        <div className="flex items-center gap-3">
+          <Filter />
+
+          <Form
+            open={isFormOpen}
+            onOpenChange={(open) => {
+              setIsFormOpen(open);
+              if (!open) setEditData(null);
+            }}
+            data={editData}
+            onSubmit={(formData) => {
+              if (editData) {
+                dispatch(updateItem(formData)); // ✅ Changed
+              } else {
+                dispatch(addItem({ id: Date.now(), ...formData })); // ✅ Changed
+              }
+              setIsFormOpen(false);
+              setEditData(null);
+            }}
           />
-          <AddItem open={addItemOpen} setOpen={setAddItemOpen} />
         </div>
-      </div>
-
-      {/* Product Table */}
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-        <Table>
-          <TableCaption>A list of your products.</TableCaption>
-          <TableHeader className="bg-gray-100">
-            <TableRow>
-              <TableHead
-                className="cursor-pointer select-none"
-                onClick={handleSort}
-              >
-                Group{" "}
-                <span className="text-gray-500 text-sm">
-                  {sortOrder === "asc" ? "" : ""}
-                </span>
-              </TableHead>
-              <TableHead
-                onClick={handleSort}
-                className="cursor-pointer select-none"
-              >
-                Name{" "}
-                <span className="text-gray-500 text-sm">
-                  {sortOrder === "asc" ? "" : ""}
-                </span>
-              </TableHead>
-              <TableHead>Types</TableHead>
-              <TableHead>HSN/SAC Code</TableHead>
-              <TableHead>GST</TableHead>
-              <TableHead>Unit</TableHead>
-              <TableHead>Want stock</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {userData.length > 0 ? (
-              userData.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.group}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.types}</TableCell>
-                  <TableCell>{user.hsn}</TableCell>
-                  <TableCell>{user.gst}</TableCell>
-                  <TableCell>{user.unit}</TableCell>
-                  <TableCell>{user.wantStock}</TableCell>
-                  <TableCell>{user.status}</TableCell>
-                  <TableCell>
-                    <TableCell className="text-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button className="px-3 py-1 text-xl font-bold text-gray-600 hover:bg-gray-100 rounded-md">
-                            ...
-                          </button>
-                        </DropdownMenuTrigger>
-
-                        <DropdownMenuContent align="end" className="w-32">
-                          <DropdownMenuItem asChild>
-                            <Link
-                              to={`/edit/${user.id}`}
-                              className="flex items-center gap-2 hover:text-blue-600"
-                            >
-                              <FiEdit className="text-blue-500" /> Edit
-                            </Link>
-                          </DropdownMenuItem>
-
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(user.id)}
-                            className="flex items-center gap-2 hover:text-red-600 text-red-500"
-                          >
-                            <MdDelete /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan="9" className="text-center py-6">
-                  No products found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Pagination */}
-      {sortedUsers.length > 0 && (
-        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 mt-4 rounded-lg shadow-sm">
-          <p className="text-sm text-gray-700">
-            Showing <span className="font-semibold">{firstIndex + 1}</span> to{" "}
-            <span className="font-semibold">
-              {Math.min(lastIndex, sortedUsers.length)}
-            </span>{" "}
-            of <span className="font-semibold">{sortedUsers.length}</span>{" "}
-            results
-          </p>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`p-2 rounded-md border ${
-                currentPage === 1
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              <ChevronLeftIcon className="w-5 h-5" />
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => goToPage(i + 1)}
-                className={`px-3 py-1 rounded-md text-sm font-medium ${
-                  currentPage === i + 1
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white hover:bg-gray-100"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-
-            <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`p-2 rounded-md border ${
-                currentPage === totalPages
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              <ChevronRightIcon className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+      }
+    />
   );
 }
-
-export default Tableuser;
