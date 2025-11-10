@@ -20,75 +20,39 @@ import {
     AlertDialogCancel,
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { MoreVertical, Pencil, Trash2, Plus } from "lucide-react";
-import Form from "@/components/items/FormItem";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import GroupForm from "@/components/items/FormGroup";
 import Filter from "@/components/common/ReuseFilter";
 import { useSelector, useDispatch } from "react-redux";
 import {
     startLoading,
-    loadItemSuccess,
-    deleteItem,
-} from "@/redux/itemsSlice";
+    loadItemGroupSuccess,
+    deleteGroup,
+} from "@/redux/itemGroupsSlice";
 
-export default function Table() {
+export default function GroupTable() {
     const [editData, setEditData] = React.useState(null);
     const [isFormOpen, setIsFormOpen] = React.useState(false);
     const [deleteTarget, setDeleteTarget] = React.useState(null);
     const [confirmOpen, setConfirmOpen] = React.useState(false);
 
     const dispatch = useDispatch();
-    const { data, loading, filters } = useSelector((state) => state.items);
+    const { data, loading, filters } = useSelector((state) => state.itemGroup);
 
-
+    
     React.useEffect(() => {
         dispatch(startLoading());
         setTimeout(() => {
-            const savedItems = JSON.parse(localStorage.getItem("itemsData")) || [];
-            dispatch(loadItemSuccess(savedItems));
+            const savedGroups = JSON.parse(localStorage.getItem("itemGroupData")) || [];
+            dispatch(loadItemGroupSuccess(savedGroups));
         }, 500);
     }, [dispatch]);
 
-
+    
     const columns = React.useMemo(
         () => [
-            { accessorKey: "group", header: "Group" },
             { accessorKey: "name", header: "Name" },
-            { accessorKey: "type", header: "Type" },
-            { accessorKey: "hsn", header: "HSN/SAC Code" },
-            { accessorKey: "gst", header: "GST" },
-            { accessorKey: "unit", header: "Unit" },
-            {
-                accessorKey: "stock",
-                header: "Want Stock",
-                cell: ({ row }) => (
-                    <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${row.getValue("stock") === "Yes"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-600"
-                            }`}
-                    >
-                        {row.getValue("stock")}
-                    </span>
-                ),
-            },
-            {
-                accessorKey: "status",
-                header: "Status",
-                cell: ({ row }) => {
-                    const status = row.getValue("status");
-                    const color =
-                        status === "Active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700";
-                    return (
-                        <span
-                            className={`px-2 py-1 text-xs font-semibold rounded-full ${color}`}
-                        >
-                            {status}
-                        </span>
-                    );
-                },
-            },
+            { accessorKey: "shortname", header: "ShortName" },
             {
                 id: "actions",
                 header: "Actions",
@@ -138,7 +102,7 @@ export default function Table() {
         []
     );
 
-
+    
     const handleConfirmDelete = () => {
         if (deleteTarget) {
             dispatch(deleteItem(deleteTarget.id));
@@ -147,11 +111,11 @@ export default function Table() {
 
             const updatedItems =
                 data.filter((item) => item.id !== deleteTarget.id) || [];
-            localStorage.setItem("itemsData", JSON.stringify(updatedItems));
+            localStorage.setItem("itemGroupData", JSON.stringify(updatedItems));
         }
     };
 
-
+    
     const filteredData = React.useMemo(() => {
         if (!filters || Object.keys(filters).length === 0) return data;
 
@@ -159,16 +123,12 @@ export default function Table() {
             return (
                 (!filters.name ||
                     item.name?.toLowerCase().includes(filters.name.toLowerCase())) &&
-                (!filters.group || item.group === filters.group) &&
-                (!filters.type || item.type === filters.type) &&
-                (!filters.gst || item.gst === filters.gst) &&
-                (!filters.unit || item.unit === filters.unit) &&
-                (!filters.status || item.status === filters.status) &&
-                (!filters.wantStock || item.stock === filters.wantStock)
+                (!filters.shortname || item.shortname === filters.shortname)
             );
         });
     }, [data, filters]);
 
+    
     return (
         <>
             <ReusableTable
@@ -177,31 +137,22 @@ export default function Table() {
                 loading={loading}
                 pageSize={15}
                 toolbarRight={[
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center gap-3">
                     <Filter key="filter" />
-                    <Button
-                        key="addItem"
-                        className="bg-blue-700 hover:bg-blue-500 text-white"
-                        onClick={() => {
-                            setEditData(null);
-                            setIsFormOpen(true);
+                    <GroupForm
+                        key="Groupform"
+                        open={isFormOpen}
+                        onOpenChange={(open) => {
+                            setIsFormOpen(open);
+                            if (!open) setEditData(null);
                         }}
-                    >
-                        <Plus className="w-4 h-4 mr-2" /> Add Item
-                    </Button>
-                  </div>
+                        data={editData}
+                    />
+                    </div>
                 ]}
-                emptyMessage="No items found."
+                emptyMessage=" Group item not found."
             />
 
-            <Form
-                open={isFormOpen}
-                onOpenChange={(open) => {
-                    setIsFormOpen(open);
-                    if (!open) setEditData(null);
-                }}
-                data={editData}
-            />
             <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

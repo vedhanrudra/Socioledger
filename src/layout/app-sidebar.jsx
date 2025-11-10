@@ -86,8 +86,8 @@ const data = {
     title: "Order",
     icon: ShoppingCart,
     items: [
-      { title: "Order Purchase", url: "/order/OrderPurchase", icon: FileText },
-      { title: "Order Sale", url: "/order/OrderSales", icon: FileText },
+      { title: "Order Types", url: "/order/OrderPurchase", icon: FileText },
+      { title: "Order Customer", url: "/order/OrderSales", icon: FileText },
     ],
   },
   {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { addVoucher, updateVoucher } from "@/redux/voucherSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, updateItem } from "@/redux/itemsSlice"; // ✅ only items
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,10 +30,11 @@ import {
 import { Check, Package, Settings, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function Form({ open, onOpenChange, data, onSubmit }) {
+export default function Form({ open, onOpenChange, data }) {
   const dispatch = useDispatch();
   const isEditMode = Boolean(data);
 
+  // form states
   const [name, setName] = useState("");
   const [group, setGroup] = useState("");
   const [type, setType] = useState("");
@@ -45,12 +46,16 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
   const [minQty, setMinQty] = useState("");
   const [errors, setErrors] = useState({});
 
-  const groups = ["Primary"];
+  // dropdown data
+  const groups = useSelector((state) =>
+  state.itemGroups.list.map((g) => g.name)
+ );
   const types = ["Goods", "Services"];
   const units = ["Pcs"];
   const statuses = ["Active", "Inactive"];
   const stockOptions = ["Yes", "No"];
 
+  // validate input
   const validateForm = () => {
     const newErrors = {};
     if (!name) newErrors.name = "Name is required";
@@ -69,6 +74,7 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
     return Object.keys(newErrors).length === 0;
   };
 
+  // set initial values when editing
   useEffect(() => {
     if (data) {
       setName(data.name || "");
@@ -93,30 +99,28 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
     }
   }, [data, open]);
 
+  // handle save
   const handleSave = () => {
-  if (validateForm()) {
-    const formData = {
-      id: data?.id || Date.now(),
-      name,
-      group,
-      type,
-      hsn,
-      unit,
-      status,
-      photo,
-      wantStock,
-      minQty,
-    };
+    if (validateForm()) {
+      const formData = {
+        id: data?.id || Date.now(),
+        name,
+        group,
+        type,
+        hsn,
+        unit,
+        status,
+        photo,
+        wantStock,
+        minQty,
+      };
 
-    // ✅ Call the parent onSubmit instead of dispatching here
-    if (typeof onSubmit === "function") {
-      onSubmit(formData);
+      if (isEditMode) dispatch(updateItem(formData));
+      else dispatch(addItem(formData));
+
+      onOpenChange(false);
     }
-
-    onOpenChange(false);
-  }
-};
-
+  };
 
   return (
     <Sheet onOpenChange={onOpenChange} open={open}>
@@ -128,6 +132,7 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
           </Button>
         </SheetTrigger>
       )}
+
       <SheetContent className="sm:max-w-[480px] overflow-y-auto">
         <SheetHeader className="flex flex-col gap-1">
           <div className="flex justify-between items-center">
@@ -143,7 +148,7 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
                 </SheetTitle>
                 <SheetDescription>
                   {isEditMode
-                    ? "Modify details below to update the item."
+                    ? "Modify the details below to update the item."
                     : "Fill in the details below to create a new item."}
                 </SheetDescription>
               </div>
@@ -152,22 +157,16 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
           </div>
         </SheetHeader>
 
+        {/* FORM BODY */}
         <div className="mt-6 space-y-5">
           {/* Name */}
-          <div className="grid gap-2">
-            <Label htmlFor="name">
-              Name <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="name"
-              placeholder="Enter item name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name}</p>
-            )}
-          </div>
+          <TextInput
+            label="Name"
+            value={name}
+            setValue={setName}
+            error={errors.name}
+            placeholder="Enter item name"
+          />
 
           {/* Group */}
           <Dropdown
@@ -187,9 +186,10 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
             error={errors.type}
           />
 
-          {/* Photo */}
+          {/* Conditional fields for Goods */}
           {type === "Goods" && (
             <div className="space-y-4 border-t pt-4 mt-2">
+              {/* Photo Upload */}
               <div className="grid gap-2">
                 <Label>Photo</Label>
                 <Input
@@ -198,33 +198,6 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
                   onChange={(e) => setPhoto(e.target.files[0])}
                 />
               </div>
-            </div>
-          )}
-
-          {/* HSN */}
-          <div className="grid gap-2">
-            <Label htmlFor="hsn">HSN/SAC Code</Label>
-            <Input
-              id="hsn"
-              placeholder="Enter HSN/SAC Code"
-              value={hsn}
-              onChange={(e) => setHsn(e.target.value)}
-            />
-          </div>
-
-          {/* Unit */}
-          <Dropdown
-            label="Unit"
-            value={unit}
-            setValue={setUnit}
-            options={units}
-            error={errors.unit}
-          />
-
-          {/* Conditional fields appear when type === "Goods" */}
-          {type === "Goods" && (
-            <div className="space-y-4 border-t pt-4 mt-2">
-             
 
               {/* Want Stock */}
               <Dropdown
@@ -236,22 +209,33 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
               />
 
               {/* Minimum Quantity */}
-              <div className="grid gap-2">
-                <Label>
-                  Minimum Quantity <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="number"
-                  value={minQty}
-                  onChange={(e) => setMinQty(e.target.value)}
-                  placeholder="Enter minimum quantity"
-                />
-                {errors.minQty && (
-                  <p className="text-red-500 text-sm">{errors.minQty}</p>
-                )}
-              </div>
+              <TextInput
+                label="Minimum Quantity"
+                value={minQty}
+                setValue={setMinQty}
+                error={errors.minQty}
+                placeholder="Enter minimum quantity"
+                type="number"
+              />
             </div>
           )}
+
+          {/* HSN */}
+          <TextInput
+            label="HSN/SAC Code"
+            value={hsn}
+            setValue={setHsn}
+            placeholder="Enter HSN/SAC Code"
+          />
+
+          {/* Unit */}
+          <Dropdown
+            label="Unit"
+            value={unit}
+            setValue={setUnit}
+            options={units}
+            error={errors.unit}
+          />
 
           {/* Status */}
           <Dropdown
@@ -263,7 +247,7 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
           />
         </div>
 
-        {/* Footer */}
+        {/* FOOTER */}
         <SheetFooter className="flex justify-end gap-3 mt-4">
           <Button
             onClick={handleSave}
@@ -278,44 +262,62 @@ export default function Form({ open, onOpenChange, data, onSubmit }) {
       </SheetContent>
     </Sheet>
   );
+}
 
-  // Reusable dropdown component
-  function Dropdown({ label, value, setValue, options, error }) {
-    return (
-      <div className="grid gap-2">
-        <Label>
-          {label} <span className="text-red-500">*</span>
-        </Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full justify-between">
-              {value || `Select ${label}`}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[250px] p-0">
-            <Command>
-              <CommandInput placeholder={`Search ${label.toLowerCase()}...`} />
-              <CommandList>
-                <CommandEmpty>No result found.</CommandEmpty>
-                <CommandGroup>
-                  {options.map((opt) => (
-                    <CommandItem key={opt} onSelect={() => setValue(opt)}>
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          value === opt ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {opt}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-      </div>
-    );
-  }
+/* 🔹 Small helper components for cleaner JSX */
+
+function TextInput({ label, value, setValue, error, placeholder, type = "text" }) {
+  return (
+    <div className="grid gap-2">
+      <Label>
+        {label} <span className="text-red-500">*</span>
+      </Label>
+      <Input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+    </div>
+  );
+}
+
+function Dropdown({ label, value, setValue, options, error }) {
+  return (
+    <div className="grid gap-2">
+      <Label>
+        {label} <span className="text-red-500">*</span>
+      </Label>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className="w-full justify-between">
+            {value || `Select ${label}`}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[250px] p-0">
+          <Command>
+            <CommandInput placeholder={`Search ${label.toLowerCase()}...`} />
+            <CommandList>
+              <CommandEmpty>No result found.</CommandEmpty>
+              <CommandGroup>
+                {options.map((opt) => (
+                  <CommandItem key={opt} onSelect={() => setValue(opt)}>
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === opt ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {opt}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+    </div>
+  );
 }
