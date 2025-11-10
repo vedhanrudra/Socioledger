@@ -21,38 +21,38 @@ import {
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
-import GroupForm from "@/components/items/FormGroup";
+import UnitForm from "@/components/items/FormUnit";
 import Filter from "@/components/common/ReuseFilter";
 import { useSelector, useDispatch } from "react-redux";
 import {
     startLoading,
-    loadItemGroupSuccess,
-    deleteGroup,
-} from "@/redux/itemGroupsSlice";
+    loadItemUnitSuccess,
+    deleteUnit,
+} from "@/redux/itemUnitSlice";
 
-export default function GroupTable() {
+export default function UnitTable() {
     const [editData, setEditData] = React.useState(null);
     const [isFormOpen, setIsFormOpen] = React.useState(false);
     const [deleteTarget, setDeleteTarget] = React.useState(null);
     const [confirmOpen, setConfirmOpen] = React.useState(false);
 
     const dispatch = useDispatch();
-    const { data, loading, filters } = useSelector((state) => state.itemGroup);
+    const { data, loading, filters } = useSelector((state) => state.itemUnit);
 
     
     React.useEffect(() => {
         dispatch(startLoading());
         setTimeout(() => {
-            const savedGroups = JSON.parse(localStorage.getItem("itemGroupData")) || [];
-            dispatch(loadItemGroupSuccess(savedGroups));
+            const savedUnits = JSON.parse(localStorage.getItem("itemUnitData")) || [];
+            dispatch(loadItemUnitSuccess(savedUnits));
         }, 500);
     }, [dispatch]);
 
     
     const columns = React.useMemo(
         () => [
-            { accessorKey: "name", header: "Name" },
-            { accessorKey: "shortname", header: "ShortName" },
+            { accessorKey: "name", header: "Unit Name" },
+            { accessorKey: "shortname", header: "Short Name" },
             {
                 id: "actions",
                 header: "Actions",
@@ -105,13 +105,13 @@ export default function GroupTable() {
     
     const handleConfirmDelete = () => {
         if (deleteTarget) {
-            dispatch(deleteItem(deleteTarget.id));
+            dispatch(deleteUnit(deleteTarget.id));
             setConfirmOpen(false);
             setDeleteTarget(null);
 
-            const updatedItems =
-                data.filter((item) => item.id !== deleteTarget.id) || [];
-            localStorage.setItem("itemGroupData", JSON.stringify(updatedItems));
+            const updatedUnits =
+                data.filter((unit) => unit.id !== deleteTarget.id) || [];
+            localStorage.setItem("itemUnitData", JSON.stringify(updatedUnits)); // ✅ Corrected key
         }
     };
 
@@ -119,11 +119,12 @@ export default function GroupTable() {
     const filteredData = React.useMemo(() => {
         if (!filters || Object.keys(filters).length === 0) return data;
 
-        return data.filter((item) => {
+        return data.filter((unit) => {
             return (
                 (!filters.name ||
-                    item.name?.toLowerCase().includes(filters.name.toLowerCase())) &&
-                (!filters.shortname || item.shortname === filters.shortname)
+                    unit.name?.toLowerCase().includes(filters.name.toLowerCase())) &&
+                (!filters.shortname ||
+                    unit.shortname?.toLowerCase().includes(filters.shortname.toLowerCase()))
             );
         });
     }, [data, filters]);
@@ -137,10 +138,10 @@ export default function GroupTable() {
                 loading={loading}
                 pageSize={15}
                 toolbarRight={[
-                  <div className="flex items-center gap-3">
+                     <div className="flex items-center gap-3">
                     <Filter key="filter" />
-                    <GroupForm
-                        key="Groupform"
+                    <UnitForm
+                        key="unitForm"
                         open={isFormOpen}
                         onOpenChange={(open) => {
                             setIsFormOpen(open);
@@ -148,11 +149,12 @@ export default function GroupTable() {
                         }}
                         data={editData}
                     />
-                    </div>
+                </div>
                 ]}
-                emptyMessage=" Group item not found."
+                emptyMessage="item unit not found."
             />
 
+            
             <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

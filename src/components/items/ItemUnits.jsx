@@ -1,10 +1,9 @@
 import React from "react";
-import TableUser from "@/components/items/TableUser";
-
+import Table from "@/components/items/TableUnit";
 export default function ItemUnits() {
   return (
     <div className="p-6">
-      <TableUser />
+      <Table />
     </div>
   );
 }

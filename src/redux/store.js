@@ -1,15 +1,16 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // uses localStorage
-
+import itemUnitReducer from "./itemUnitSlice";
 import itemsReducer from "./itemsSlice";
-import itemGroupsReducer from "./itemGroupsSlice";
+import itemGroupReducer from "./itemGroupsSlice";
 
 /* 1️⃣ Combine reducers */
 const rootReducer = combineReducers({
   items: itemsReducer,
-  itemGroups: itemGroupsReducer,
-});
+  itemGroup: itemGroupReducer,
+  itemUnit: itemUnitReducer,
+ });
 
 /* 2️⃣ Persist config */
 const persistConfig = {

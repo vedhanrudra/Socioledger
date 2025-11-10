@@ -45,7 +45,7 @@ export default function ReusableTable({
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: Array.isArray(data) ? data : [], 
     columns,
     getRowId,
     onSortingChange: setSorting,

@@ -1,48 +1,83 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
-const itemsSlice = createSlice({
-  name: "items",
-  initialState: {
-    list: [], // all added items
+
+const savedItems = JSON.parse(localStorage.getItem("itemsData")) || [];
+const savedFilters = JSON.parse(localStorage.getItem("itemsFilters")) || {}; // ✅ Object, not array
+
+const initialState = {
+    data: savedItems,
     loading: false,
-    filter: {
-      name: "",
-      type: "",
-      status: "",
-    }, // filters for the table
-  },
-  reducers: {
-    // set entire list (useful if you ever fetch from API)
-    setItems: (state, action) => {
-      state.list = action.payload;
-    },
+    error: null,
+    filters: savedFilters, 
+};
 
-    // add a new item
-    addItem: (state, action) => {
-      state.list.push(action.payload);
-    },
+const itemSlice = createSlice({
+    name: "items",
+    initialState,
+    reducers: {
 
-    // update an existing item by id
-    updateItem: (state, action) => {
-      const index = state.list.findIndex((i) => i.id === action.payload.id);
-      if (index !== -1) {
-        state.list[index] = action.payload;
-      }
-    },
+        startLoading(state) {
+            state.loading = true;
+        },
 
-    // delete an item by id
-    deleteItem: (state, action) => {
-      state.list = state.list.filter((i) => i.id !== action.payload);
-    },
+        
+        loadItemSuccess(state, action) {
+            state.data = action.payload;
+            state.loading = false;
+            localStorage.setItem("itemsData", JSON.stringify(state.data));
+        },
 
-    // set or update filters
-    setFilter: (state, action) => {
-      state.filter = { ...state.filter, ...action.payload };
+        
+        addItem(state, action) {
+            state.data.push({ id: nanoid(), ...action.payload });
+            localStorage.setItem("itemsData", JSON.stringify(state.data));
+        },
+
+        
+        updateItem(state, action) {
+            const { id, updatedData } = action.payload;
+            const index = state.data.findIndex((item) => item.id === id);
+            if (index !== -1) {
+                state.data[index] = { ...state.data[index], ...updatedData };
+                localStorage.setItem("itemsData", JSON.stringify(state.data));
+            }
+        },
+
+        
+        deleteItem(state, action) {
+            state.data = state.data.filter((item) => item.id !== action.payload);
+            localStorage.setItem("itemsData", JSON.stringify(state.data));
+        },
+
+        
+        setFilters(state, action) {
+            state.filters = action.payload; 
+            localStorage.setItem("itemsFilters", JSON.stringify(state.filters)); 
+        },
+
+        
+        clearFilters(state) {
+            state.filters = {}; 
+            localStorage.removeItem("itemsFilters");
+        },
+
+        
+        setError(state, action) {
+            state.error = action.payload;
+            state.loading = false;
+        },
     },
-  },
 });
 
-export const { setItems, addItem, updateItem, deleteItem, setFilter } =
-  itemsSlice.actions;
+export const {
+    startLoading,
+    loadItemSuccess,
+    addItem,
+    updateItem,
+    deleteItem,
+    setError,
+    setFilters,
+    clearFilters,
+} = itemSlice.actions;
 
-export default itemsSlice.reducer;
+export default itemSlice.reducer;

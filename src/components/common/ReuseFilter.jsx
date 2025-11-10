@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter } from "@/redux/itemsSlice"; // ✅ use itemsSlice
+import { setFilters } from "@/redux/itemsSlice"; // ✅ use itemsSlice
 
 import {
   Dialog,

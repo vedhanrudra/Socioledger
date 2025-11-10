@@ -243,15 +243,15 @@ export function SiteHeader() {
       case "/order/OrderPurchase":
         return {
           icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
-          title: "Order Purchase",
-          subtitle: "View and manage all customer orders",
+          title: "Order Types",
+          subtitle: "Manage order types",
         };
 
       case "/order/OrderSales":
         return {
           icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
-          title: "Order Sales",
-          subtitle: "View and manage all customer orders",
+          title: "Order Customer",
+          subtitle: "Manage customer orders",
         };
 
       // 📑 Quotations
