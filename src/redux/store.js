@@ -4,12 +4,16 @@ import storage from "redux-persist/lib/storage"; // uses localStorage
 import itemUnitReducer from "./itemUnitSlice";
 import itemsReducer from "./itemsSlice";
 import itemGroupReducer from "./itemGroupsSlice";
+import colorsReducer from "./colorSlice";
+import designReducer from "./designSlice";
 
 /* 1️⃣ Combine reducers */
 const rootReducer = combineReducers({
   items: itemsReducer,
   itemGroup: itemGroupReducer,
   itemUnit: itemUnitReducer,
+  colors: colorsReducer,
+  design: designReducer,
  });
 
 /* 2️⃣ Persist config */
