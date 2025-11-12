@@ -1,6 +1,6 @@
 import React from 'react'
 import OrderTable from '@/components/order/OrderTable'
-function OrderSales() {
+function OrderTypes() {
   return (
     <div>
       <OrderTable />
@@ -8,4 +8,4 @@ function OrderSales() {
   )
 }
 
-export default OrderSales
+export default OrderTypes

@@ -21,30 +21,31 @@ import {
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
-import GroupForm from "@/components/items/FormGroup";
+import ColorForm from "@/components/items/ColorForm";
 import Filter from "@/components/common/ReuseFilter";
 import { useSelector, useDispatch } from "react-redux";
 import {
-    startLoading,
-    loadItemGroupSuccess,
-    deleteGroup,
-} from "@/redux/itemGroupsSlice";
+  startLoading,
+  loadColorSuccess,
+  deleteColor,
+} from "@/redux/colorSlice";
 
-export default function GroupTable() {
+
+export default function ColorTable() {
     const [editData, setEditData] = React.useState(null);
     const [isFormOpen, setIsFormOpen] = React.useState(false);
     const [deleteTarget, setDeleteTarget] = React.useState(null);
     const [confirmOpen, setConfirmOpen] = React.useState(false);
 
     const dispatch = useDispatch();
-    const { data, loading, filters } = useSelector((state) => state.itemGroup);
+    const { data, loading, filters } = useSelector((state) => state.colors);
 
     
     React.useEffect(() => {
         dispatch(startLoading());
         setTimeout(() => {
-            const savedGroups = JSON.parse(localStorage.getItem("itemGroupData")) || [];
-            dispatch(loadItemGroupSuccess(savedGroups));
+            const savedColors = JSON.parse(localStorage.getItem("itemColorData")) || [];
+            dispatch(loadColorSuccess(savedColors));
         }, 500);
     }, [dispatch]);
 
@@ -52,7 +53,7 @@ export default function GroupTable() {
     const columns = React.useMemo(
         () => [
             { accessorKey: "name", header: "Name" },
-            { accessorKey: "shortname", header: "ShortName" },
+            { accessorKey: "RealTouch", header: "Real touch" },
             {
                 id: "actions",
                 header: "Actions",
@@ -105,13 +106,13 @@ export default function GroupTable() {
     
     const handleConfirmDelete = () => {
         if (deleteTarget) {
-            dispatch(deleteGroup(deleteTarget.id));
+            dispatch(deleteColor(deleteTarget.id));
             setConfirmOpen(false);
             setDeleteTarget(null);
 
             const updatedItems =
                 data.filter((item) => item.id !== deleteTarget.id) || [];
-            localStorage.setItem("itemGroupData", JSON.stringify(updatedItems));
+            localStorage.setItem("itemColorData", JSON.stringify(updatedItems));
         }
     };
 
@@ -139,7 +140,7 @@ export default function GroupTable() {
                 toolbarRight={[
                   <div className="flex items-center gap-3">
                     <Filter key="filter" />
-                    <GroupForm
+                    <ColorForm
                         key="Groupform"
                         open={isFormOpen}
                         onOpenChange={(open) => {

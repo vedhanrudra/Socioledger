@@ -21,6 +21,7 @@ import {
   Repeat,
   BookOpen,
   Clock,
+  Palette
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -75,8 +76,9 @@ export function SiteHeader() {
     { name: "Items table", path: "/items/ItemTable" },
     { name: "Items groups", path: "/items/ItemGroups" },
     { name: "Items units", path: "/items/ItemUnits" },
+    { name: "Touch & Colors", path: "/items/Colors"},
+    { name: "Items designs", path: "/items/ItemDesigns"},
     { name: "Years", path: "/years" },
-    { name: "estimate", path: "/vouchers/Estimate" },
     { name: "sales", path: "/vouchers/Sales" },
     { name: "sales return", path: "/vouchers/SalesReturn" },
     { name: "purchase", path: "/vouchers/Purchase" },
@@ -88,7 +90,6 @@ export function SiteHeader() {
     { name: "opening", path: "/vouchers/Opening"},
     { name: "MaterialIn", path: "/jobwork/MaterialIn"},
     { name: "MaterialOut", path: "/jobwork/MaterialOut"},
-    { name: "quotation", path: "/quotation/Quotation" },
     { name: "payments", path: "/Payments/Payments" },
     { name: "receipts", path: "/receipts/Receipts" },
     { name: "ledgers", path: "/ledgers/Ledgers" },
@@ -102,10 +103,13 @@ export function SiteHeader() {
     { name: "profit and loss", path: "/reports/ProfitLoss" },
     { name: "stock", path: "/reports/Stock" },
     { name: "voucher", path: "/reports/Voucher" },
+    { name: "sales register", path: "/reports/OrderSummary" },
     { name: "daily register", path: "/reports/DailyRegister" },
     { name: "ageing", path: "/reports/Ageing" },
     { name: "tds report", path: "/reports/TdsReport" },
     { name: "task", path: "/task" },
+    {name}
+
   ];
 
   const filteredRoutes = routes.filter(
@@ -145,6 +149,20 @@ export function SiteHeader() {
           subtitle: "Define measurement units for your items",
         };
 
+      case "/items/Colors":
+        return {
+          icon: <Palette className="w-5 h-5 text-indigo-600" />,
+          title: "Touch",
+          subtitle: "Manage Touch Vouchers",
+        };
+
+      case "/items/Design":
+        return {
+          icon: <Palette className="w-5 h-5 text-indigo-600" />,
+          title: "Item Designs",
+          subtitle: "Manage Item Designs",
+        };
+
       // 📅 Years
       case "/years":
         return {
@@ -154,12 +172,6 @@ export function SiteHeader() {
         };
 
       // 💰 Vouchers
-      case "/vouchers/Estimate":
-        return {
-          icon: <FileText className="w-5 h-5 text-indigo-600" />,
-          title: "Estimate",
-          subtitle: "Create and manage customer estimates and quotations",
-        };
 
       case "/vouchers/Sales":
         return {
@@ -224,42 +236,27 @@ export function SiteHeader() {
           subtitle: "Initialize your accounts with opening balances",
         };
 
-      // 🧰 Jobwork
-      case "/jobwork/MaterialIn":
-        return {
-          icon: <Briefcase className="w-5 h-5 text-indigo-600" />,
-          title: "Material In",
-          subtitle: "Handle external job processes and work orders",
-        };
-
-      case "/jobwork/MaterialOut":
-        return {
-          icon: <Briefcase className="w-5 h-5 text-indigo-600" />,
-          title: "Material Out",
-          subtitle: "Manage outgoing materials and jobwork dispatches",
-        };
 
       // 🛒 Orders
-      case "/order/OrderPurchase":
+      case "/order/OrderTypes":
         return {
           icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
           title: "Order Types",
           subtitle: "Manage order types",
         };
 
-      case "/order/OrderSales":
+      case "/order/OrderCustomer":
         return {
           icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
           title: "Order Customer",
           subtitle: "Manage customer orders",
         };
 
-      // 📑 Quotations
-      case "/quotation/Quotation":
+      case "/order/OrderSupplier":
         return {
-          icon: <FileText className="w-5 h-5 text-indigo-600" />,
-          title: "Quotations",
-          subtitle: "Manage and track all quotations and proposals",
+          icon: <ShoppingCart className="w-5 h-5 text-indigo-600" />,
+          title: "Order Supplier",
+          subtitle: "Manage supplier orders",
         };
 
       // 💳 Payments
@@ -277,7 +274,14 @@ export function SiteHeader() {
           title: "Receipts",
           subtitle: "Keep record of received payments and bills",
         };
-
+         
+      case "/RateCut/RateCut":
+        return {
+          icon: <Receipt className="w-5 h-5 text-indigo-600" />,
+          title: "Rate Cut",
+          subtitle: "Keep record of received payments and bills",
+        };
+        
       // 👥 Ledgers
       case "/ledgers/Ledgers":
         return {
@@ -358,11 +362,32 @@ export function SiteHeader() {
         subtitle: "View all voucher transactions and entries",
       };
 
+    case "/reports/OrderSummary":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Order Summary",
+        subtitle: "Track and analyze customer and supplier orders",
+      };
+
+    case "/reports/TagReport":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Tag Report",
+        subtitle: "Track and analyze customer and supplier orders",
+      } ;
+
+    case "/reports/TagVerify":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Tag Verify",
+        subtitle: "Track and analyze customer and supplier orders",
+      };
+
     case "/reports/DailyRegister":
       return {
         icon: <FileText className="w-5 h-5 text-indigo-600" />,
         title: "Daily Register",
-        subtitle: "Track daily business activities and records",
+        subtitle: "Track daily business",
       };
 
     case "/reports/Ageing":
@@ -378,14 +403,13 @@ export function SiteHeader() {
         title: "TDS Report",
         subtitle: "Review tax deducted at source details",
       };
-
-      // 💼 GST
-      case "/GST":
-        return {
-          icon: <Percent className="w-5 h-5 text-indigo-600" />,
-          title: "GST",
-          subtitle: "Manage GST details and compliance reports",
-        };
+     
+    case "/reports/RateCutSupport":
+      return {
+        icon: <FileText className="w-5 h-5 text-indigo-600" />,
+        title: "Rate Cut Support",
+        subtitle: "Review tax deducted at source details",
+      };
 
       // 🧑‍🤝‍🧑 Team
       case "/Team":

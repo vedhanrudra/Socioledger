@@ -51,6 +51,8 @@ const data = {
         { title: "Items ", url: "/items/ItemTable", icon: Package },
         { title: "Items Groups", url: "/items/ItemGroups", icon: FileText },
         { title: "Items Units", url: "/items/ItemUnits", icon: FileSpreadsheet },
+        { title: "Touch & Colors", url: "/items/Colors", icon: FileSpreadsheet },
+        { title: "Item Designs", url: "/items/Design", icon: FileSpreadsheet },
       ],
     },
     {
@@ -62,7 +64,6 @@ const data = {
     title: "Vouchers",
     icon: Receipt,
     items: [
-      { title: "Estimate", url: "/vouchers/Estimate", icon: FileText },
       { title: "Sales", url: "/vouchers/Sales", icon: ShoppingCart },
       { title: "Sale Return", url: "/vouchers/SalesReturn", icon: CreditCard },
       { title: "Purchase", url: "/vouchers/Purchase", icon: ShoppingCart },
@@ -74,27 +75,17 @@ const data = {
       { title: "Opening", url: "/vouchers/Opening", icon: FileSpreadsheet },
     ],
   },
-  {
-    title: "Jobwork",
-    icon: Briefcase,
-    items: [
-      { title: "Material In", url: "/jobwork/MaterialIn", icon: FileText },
-      { title: "Material Out", url: "/jobwork/MaterialOut", icon: FileText },
-    ],
-  },
+
   {
     title: "Order",
     icon: ShoppingCart,
     items: [
-      { title: "Order Types", url: "/order/OrderPurchase", icon: FileText },
-      { title: "Order Customer", url: "/order/OrderSales", icon: FileText },
+      { title: "Order Types", url: "/order/OrderTypes", icon: FileText },
+      { title: "Order Customer", url: "/order/OrderCustomer", icon: FileText },
+      { title: "Order Supplier", url: "/order/OrderSupplier", icon: FileText },
     ],
   },
-  {
-    title: "Quotations",
-    icon: FileText,
-    url: "/quotation/Quotation",
-  },
+
   {
     title: "Payments",
     icon: CreditCard,
@@ -105,6 +96,13 @@ const data = {
     icon: FileSpreadsheet,
     url : "/receipts/Receipts"
   },
+
+  {
+    title: "RateCut",
+    icon: FileSpreadsheet,
+    url : "/RateCut/RateCut"
+  },
+
   {
     title: "Ledgers",
     icon: Users,
@@ -130,19 +128,16 @@ const data = {
       { title: "Trial Balance", url: "/reports/TrialBalance", icon: FileText },
       { title: "Stock", url: "/reports/Stock", icon: Package },
       { title: "Voucher", url: "/reports/Voucher", icon: Receipt },
+      {title: "Order Summary", url: "/reports/OrderSummary", icon: FileText},
+      { title: "Tag Report", url: "/reports/TagReport", icon: FileText },
+      { title: "Tag Verify", url: "/reports/TagVerify", icon: FileText },
       { title: "Daily Register", url: "/reports/DailyRegister", icon: FileText },
       { title: "Ageing", url: "/reports/Ageing", icon: Calendar },
       { title: "TDS Report", url: "/reports/TdsReport", icon: FileSpreadsheet },
+      { title: "Rate Cut Support", url: "/reports/RateCutSupport", icon: FileSpreadsheet },
     ],
   },
-  {
-    title: "GST",
-    icon: FileSpreadsheet,
-    items: [
-      { title: "GSTR-1", url: "#", icon: FileText },
-      { title: "GST2B", url: "#", icon: FileSpreadsheet },
-    ],
-  },
+
   {
     title: "Team",
     icon: Users,
