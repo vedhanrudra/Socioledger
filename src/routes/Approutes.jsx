@@ -42,6 +42,7 @@ import Ageing from "@/components/reports/Ageing";
 import TdsReport from "@/components/reports/TdsReport";
 import RateCutSupport from "@/components/reports/RateCutSupport";
 import RateCut from "@/components/RateCut/RateCut";
+import GoldStore from "@/components/goldstore/GoldStore";
 const SectionCards = lazy(() => import("@/components/section-cards"));
 //const Tableuser = lazy(() => import("@/components/items/Tableuser"));
 
@@ -66,7 +67,9 @@ export function AppRoutes() {
         <Route path="/years" element={<Year />} />
         {/* task */}
         <Route path="/task" element={<Task />} />
+        {/* GoldStore */}
         
+
         {/* Vouchers */}
         <Route path="/vouchers/Sales" element={<Sales />} />
         <Route path="/vouchers/SalesReturn" element={<SalesReturn />} />
@@ -120,6 +123,10 @@ export function AppRoutes() {
         
         {/* Rate Cut */}
         <Route path="/RateCut/RateCut" element={<RateCut/>} />
+
+
+        {/* GoldStore */}
+        <Route path="/GoldStore" element={<GoldStore />} />
 
         {/* Optional: 404 */}
         <Route
