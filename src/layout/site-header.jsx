@@ -21,7 +21,8 @@ import {
   Repeat,
   BookOpen,
   Clock,
-  Palette
+  Palette,
+  Store,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -463,9 +464,15 @@ export function SiteHeader() {
           <option>2026-27</option>
         </select>
 
+        <Button variant="ghost" size="icon" onClick={() => navigate("/GoldStore")}>
+          <Store className="w-5 h-5 text-gray-700" />
+        </Button>
+
         <Button variant="ghost" size="icon" onClick={() => navigate("/Task")}>
           <FileText className="w-5 h-5 text-gray-700" />
         </Button>
+
+        
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -72,8 +72,8 @@ export default function TableDesign() {
         },
       },
       { accessorKey: "supplier", header: "Supplier" },
-      { accessorKey: "SupplierDesignNumber", header: "Supplier Design Number" },
-      { accessorKey: "narration", header: "Narration" },    
+      { accessorKey: "supplierdesign", header: "Supplier Design Number" },
+      
       {
         id: "actions",
         header: "Actions",

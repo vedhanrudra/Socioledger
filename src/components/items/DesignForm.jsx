@@ -30,9 +30,19 @@ export default function DesignForm({ open, onOpenChange, data }) {
   const [item, setItem] = useState("");
   const [supplier, setSupplier] = useState("");
   const [supplierdesign, setSupplierDesign] = useState("");
+
   const [Gross, setGross] = useState("");
   const [Less, setLess] = useState("");
   const [Net, setNet] = useState("");
+
+  useEffect(() => {
+    const grossNum = parseFloat(Gross) || 0;
+    const lessNum = parseFloat(Less) || 0;
+    const net = grossNum - lessNum;
+
+    setNet(net.toFixed(3));
+  }, [Gross, Less]);
+
   const [narration, setNarration] = useState("");
   const [status, setStatus] = useState("");
   const [photo, setPhoto] = useState(null);
@@ -89,6 +99,26 @@ export default function DesignForm({ open, onOpenChange, data }) {
       setPhoto(null);
     }
   }, [data, open]);
+
+  // 🔢 Generate sequential design number for each shortname
+  const generateDesignNo = (shortname) => {
+    // Get existing design numbers from localStorage
+    const stored = JSON.parse(localStorage.getItem("designCounters")) || {};
+
+    // Get current count for this shortname
+    const currentCount = stored[shortname] || 0;
+
+    // Increment the count
+    const newCount = currentCount + 1;
+
+    // Save updated count back to localStorage
+    stored[shortname] = newCount;
+    localStorage.setItem("designCounters", JSON.stringify(stored));
+
+    // Format as 4-digit padded number (e.g., sona0001)
+    const padded = newCount.toString().padStart(4, "0");
+    return `${shortname}${padded}`;
+  };
 
   const handleSave = () => {
     if (!validateForm()) return;
@@ -170,13 +200,23 @@ export default function DesignForm({ open, onOpenChange, data }) {
                 setItem(e.target.value);
 
                 if (selectedItem) {
-                  // ✅ Fix: handle both "group" and "Group"
                   const groupName =
                     selectedItem.group || selectedItem.Group || "";
                   setItemGroup(groupName);
-                  console.log("✅ Auto-set Item Group:", groupName);
+
+                  // ✅ Auto-generate design number using shortname
+                  if (selectedItem.shortname) {
+                    const newDesignNo = generateDesignNo(
+                      selectedItem.shortname
+                    );
+                    setDesignNo(newDesignNo);
+                  } else {
+                    // fallback if no shortname
+                    setDesignNo(`DES-${Date.now().toString().slice(-4)}`);
+                  }
                 } else {
                   setItemGroup("");
+                  setDesignNo("");
                 }
               }}
               className="border rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -195,34 +235,14 @@ export default function DesignForm({ open, onOpenChange, data }) {
           </div>
 
           {/* Supplier Dropdown */}
-          <div className="grid gap-2">
-            <Label>
-              Supplier <span className="text-red-500">*</span>
-            </Label>
-            <select
-              value={supplier}
-              onChange={(e) => setSupplier(e.target.value)}
-              className="border rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select Supplier</option>
-              {suppliers.map((s, i) => (
-                <option key={i.id || i} value={s.name || s}>
-                  {s.name || s}
-                </option>
-              ))}
-            </select>
-            {errors.supplier && (
-              <p className="text-red-500 text-sm">{errors.supplier}</p>
-            )}
-          </div>
-
           <TextField
-            id="designno"
-            label="Design No"
-            value={designno}
-            onChange={setDesignNo}
-            error={null}
+            id="supplier"
+            label="Supplier "
+            value={supplier}
+            onChange={setSupplier}
+            error={errors.supplier}
           />
+
 
           <TextField
             id="supplierdesign"
@@ -233,21 +253,21 @@ export default function DesignForm({ open, onOpenChange, data }) {
           />
           <TextField
             id="Gross"
-            label="Gross"
+            label="Gross weight"
             value={Gross}
             onChange={setGross}
             error={errors.Gross}
           />
           <TextField
             id="Less"
-            label="Less"
+            label="Less weight"
             value={Less}
             onChange={setLess}
             error={errors.Less}
           />
           <TextField
             id="Net"
-            label="Net"
+            label="Net weight"
             value={Net}
             onChange={setNet}
             error={errors.Net}
@@ -357,7 +377,7 @@ export default function DesignForm({ open, onOpenChange, data }) {
 }
 
 /* 🔹 Reusable TextField */
-function TextField({ id, label, value, onChange, error }) {
+function TextField({ id, label, value, onChange, error, readOnly = false }) {
   return (
     <div className="grid gap-2">
       <Label htmlFor={id}>
@@ -367,7 +387,9 @@ function TextField({ id, label, value, onChange, error }) {
         id={id}
         placeholder={`Enter ${label.toLowerCase()}`}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        readOnly={readOnly}
+        className={`${readOnly ? "bg-gray-100 cursor-not-allowed" : ""}`}
+        onChange={(e) => !readOnly && onChange(e.target.value)}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>

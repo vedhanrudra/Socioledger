@@ -38,7 +38,7 @@ export default function Form({ open, onOpenChange, data }) {
   const [group, setGroup] = useState("");
   const [type, setType] = useState("");
   const [hsn, setHsn] = useState("");
-  const [gst, setGst] = useState("");
+  const [shortname, setShortName] = useState("");
   const [unit, setUnit] = useState("");
   const [quantity, setQuantity] = useState("");
   const [stock, setStock] = useState("");
@@ -51,7 +51,6 @@ export default function Form({ open, onOpenChange, data }) {
   const itemGroups = useSelector((state) => state.itemGroup.data);
   const itemUnits = useSelector((state) => state.itemUnit.data);
   const types = ["Goods", "Services"];
-  const gstoptions = ["0%", "5%", "12%", "18%", "28%"];
   const stockoptions = ["Yes", "No"];
   const statuses = ["Active", "Inactive"];
 
@@ -69,7 +68,7 @@ export default function Form({ open, onOpenChange, data }) {
     if (!group) newErrors.group = "Group is required";
     if (!type) newErrors.type = "Type is required";
     if (!hsn) newErrors.hsn = "HSN/SAC Code is required";
-    if (!gst) newErrors.gst = "GST is required";
+    if (!shortname) newErrors.shortname = "ShortName is required";
     if (!unit) newErrors.unit = "Unit is required";
     if (type === "Goods" && !stock) newErrors.stock = "Stock is required";
     if (type === "Goods" && !quantity)
@@ -83,9 +82,9 @@ export default function Form({ open, onOpenChange, data }) {
     if (data) {
       setName(data.name || "");
       setGroup(data.group || "");
+      setShortName(data.shortname || "");
       setType(data.type || "");
       setHsn(data.hsn || "");
-      setGst(data.gst || "");
       setUnit(data.unit || "");
       setQuantity(data.quantity || "");
       setStock(data.stock || "");
@@ -94,9 +93,9 @@ export default function Form({ open, onOpenChange, data }) {
     } else {
       setName("");
       setGroup("");
+      setShortName("");
       setType("");
       setHsn("");
-      setGst("");
       setUnit("");
       setQuantity("");
       setStock("");
@@ -120,9 +119,9 @@ export default function Form({ open, onOpenChange, data }) {
       id: isEditMode ? data.id : Date.now(),
       name,
       group: typeof group === "object" ? group.name : group,
+      shortname,
       type,
       hsn,
-      gst,
       unit: typeof unit === "object" ? unit.name : unit,
       quantity,
       stock,
@@ -141,7 +140,7 @@ export default function Form({ open, onOpenChange, data }) {
 
   return (
     <Sheet onOpenChange={onOpenChange} open={open}>
-      <SheetContent className="sm:max-w-[480px] overflow-y-auto">
+      <SheetContent className="sm:max-w-[400px]">
         <SheetHeader>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -165,13 +164,21 @@ export default function Form({ open, onOpenChange, data }) {
           </div>
         </SheetHeader>
 
-        <div className="mt-6 space-y-5">
+        <div className="mt-6 space-y-5 p-2">
           <TextField
             id="name"
             label="Name"
             value={name}
             onChange={setName}
             error={errors.name}
+          />
+
+          <TextField
+            id="shortname"
+            label="Short Name"
+            value={shortname}
+            onChange={setShortName}
+            error={errors.shortname}
           />
 
           <Dropdown
@@ -372,13 +379,6 @@ export default function Form({ open, onOpenChange, data }) {
             value={hsn}
             onChange={setHsn}
             error={errors.hsn}
-          />
-          <Dropdown
-            label="GST"
-            value={gst}
-            setValue={setGst}
-            options={gstoptions}
-            error={errors.gst}
           />
 
           {type === "Goods" && (
