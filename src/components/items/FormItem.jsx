@@ -140,7 +140,7 @@ export default function Form({ open, onOpenChange, data }) {
 
   return (
     <Sheet onOpenChange={onOpenChange} open={open}>
-      <SheetContent className="sm:max-w-[400px]">
+      <SheetContent className="sm:max-w-[400px] overflow-y-auto">
         <SheetHeader>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
