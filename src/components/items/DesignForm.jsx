@@ -78,6 +78,7 @@ export default function DesignForm({ open, onOpenChange, data }) {
     if (data) {
       setDesignNo(data.designno || "");
       setItem(data.item || "");
+      setItemGroup(data.itemgroup || "");  
       setSupplier(data.supplier || "");
       setSupplierDesign(data.supplierdesign || "");
       setGross(data.Gross || "");
@@ -89,6 +90,7 @@ export default function DesignForm({ open, onOpenChange, data }) {
     } else {
       setDesignNo(`DES-${Date.now().toString().slice(-4)}`);
       setItem("");
+      setItemGroup(""); 
       setSupplier("");
       setSupplierDesign("");
       setGross("");
