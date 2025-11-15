@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ShoppingCart } from "lucide-react";
 import {
   Sheet,
@@ -12,75 +10,186 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  clearCart,
+  removeFromCart,
+  increaseQty,
+  decreaseQty,
+} from "@/redux/cartSlice";
 
-export default function Cart() {
+export default function Cart({ badge }) {
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
+  
+
+const totalPieces = cartItems.reduce((sum, item) => sum + item.qty, 0);
+
+const totalWeight = cartItems
+  .reduce((sum, item) => sum + item.Net * item.qty, 0)
+  .toFixed(3);
+
+
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="flex items-center gap-2 bg-gray-900 hover:bg-white-800 text-white px-4 py-2">
-          <ShoppingCart />
-          Cart
-        </Button>
+        <button className="relative p-2 flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl">
+          <ShoppingCart className="w-5 h-5" />
+          <span>Cart</span>
+
+          {badge}
+        </button>
       </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetDescription>
-            <div className="space-y-4 mt-3 border rounded-lg p-4">
-              {/* Order Summary */}
-              <div className="text-gray-900 font-semibold">
-                <span>Order Summary</span>
-              </div>
+ 
+      <SheetContent className="p-0 flex flex-col h-full">
+        {/* HEADER */}
 
-              {/* Total Pieces Row */}
-              <div className="flex justify-between text-gray-700">
-                <span>Total Pieces:</span>
-                <span className="font-semibold">1 pcs</span>
-              </div>
+        {/* BODY (only this scrolls) */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {/* ORDER SUMMARY */}
 
-              {/* Unique Designs Row */}
-              <div className="flex justify-between text-gray-700">
-                <span>Unique Designs:</span>
-                <span className="font-semibold">1</span>
-              </div>
+         <div className="border rounded-lg p-4 space-y-3">
+  <h2 className="text-xl font-semibold">Order Summary</h2>
 
-              {/* Divider */}
-              <hr className="border-gray-300" />
+  <div className="flex justify-between">
+    <span>Total Pieces:</span>
+    <span className="font-semibold">{totalPieces}</span>
+  </div>
 
-              {/* Total Net Weight */}
-              <div className="flex justify-between text-gray-900 text-lg font-semibold">
-                <span>Total Net Weight:</span>
-                <span>25.000g</span>
-              </div>
+  <div className="flex justify-between">
+    <span>Unique Designs:</span>
+    <span className="font-semibold">{cartItems.length}</span>
+  </div>
+
+  <hr />
+
+  <div className="flex justify-between text-lg font-bold">
+    <span>Total Net Weight:</span>
+    <span>{totalWeight}g</span>
+  </div>
+</div>
+
+
+          {/* ORDER DETAILS */}
+          <div className="border rounded-lg p-4 space-y-4">
+            <h2 className="text-lg font-semibold">Order Details</h2>
+
+            {/* DATE */}
+            <div>
+              <label className="text-gray-900">Date</label>
+              <input
+                type="date"
+                className="w-full border rounded-lg p-2 mt-2"
+              />
             </div>
 
-            <div className="space-y-4 mt-3 border rounded-lg p-4">
-              
-              <div className="text-gray-900 font-semibold">
-                <span>Order Details</span>
-              </div>
+            {/* LEDGER */}
+            <div>
+              <label className="text-gray-900">From Ledger</label>
+              <select className="w-full border rounded-lg p-2 mt-1">
+                <option>Select from ledger</option>
+              </select>
+            </div>
 
-
-              <span className="text-gray-900">Date</span>
-              <div className="flex justify-between text-gray-700 space-y-4 mt-3 border rounded-lg p-4">
-                <input type="date" />
-              </div>       
-                
-              <span className="text-gray-900">From Ledger</span>
-              <div>
-                <select className="w-full border rounded-lg p-2">
-                  <option>Select from  Ledger</option>
+            {/* TOUCH ID + ORDER TYPE */}
+            <div className="flex gap-4">
+              <div className="w-1/2">
+                <label className="text-gray-900">Touch ID</label>
+                <select className="w-full border rounded-lg p-2 mt-1">
+                  <option></option>
                 </select>
               </div>
 
+              <div className="w-1/2">
+                <label className="text-gray-900">Order Type</label>
+                <select className="w-full border rounded-lg p-2 mt-1">
+                  <option></option>
+                </select>
+              </div>
             </div>
-          </SheetDescription>
-        </SheetHeader>
-        <SheetFooter>
-          <Button type="submit">Save changes</Button>
+
+            {/* DELIVERY DATE */}
+            <div>
+              <label className="text-gray-900">Delivery Date</label>
+              <input
+                type="date"
+                className="w-full border rounded-lg p-2 mt-2"
+              />
+            </div>
+
+            {/* NARRATION */}
+            <div>
+              <label className="text-gray-900">Narration</label>
+              <input
+                type="text"
+                className="w-full border rounded-lg p-2 mt-2"
+              />
+            </div>
+          </div>
+
+          {/* ITEMS  in Cart */}
+          <div className="mt-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Items in Cart</h2>
+
+              <button
+                onClick={() => dispatch(clearCart())}
+                className="text-red-500 text-sm font-medium"
+              >
+                Clear All
+              </button>
+            </div>
+
+            <div className="mt-3 space-y-3">
+              {cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="border rounded-xl p-4 flex items-center gap-4 bg-white"
+                >
+                  {/* IMAGE */}
+                  <img
+                    src={item.photo}
+                    className="w-16 h-16 rounded-lg object-cover"
+                    alt=""
+                  />
+
+                  {/* DETAILS */}
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900">
+                      {item.designno}
+                    </div>
+                    <div className="text-gray-600 text-sm">{item.item}</div>
+
+                    <div className="text-gray-600 text-sm flex items-center gap-2 mt-1">
+                      <span>{item.qty} piece</span>
+                      <span className="text-gray-400">•</span>
+                      <span>{item.Net}g total</span>
+                    </div>
+                  </div>
+
+                  {/* REMOVE BUTTON */}
+                  <button
+                    onClick={() => dispatch(removeFromCart(item.id))}
+                    className="text-gray-400 text-xl"
+                  >
+                    ›
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* FOOTER (fixed at bottom) */}
+        <div className="p-4 border-t flex gap-3">
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline" className="w-1/2">
+              Continue Shopping
+            </Button>
           </SheetClose>
-        </SheetFooter>
+
+          <Button className="w-1/2 bg-gray-900 text-white">Save & Exit</Button>
+        </div>
       </SheetContent>
     </Sheet>
   );

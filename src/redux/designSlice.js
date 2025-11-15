@@ -12,7 +12,7 @@ const initialState = {
 };
 
 const designSlice = createSlice({
-  name: "design", // ✅ singular (matches state.design)
+  name: "design",
   initialState,
   reducers: {
     // ---- 🔹 Loader ----
@@ -29,7 +29,7 @@ const designSlice = createSlice({
 
     // ---- 🔹 Add a new Design ----
     addDesign(state, action) {
-      state.data.push({ id: nanoid(), ...action.payload });
+      state.data.push({ id: nanoid(), wishlist: false, ...action.payload });
       localStorage.setItem("designData", JSON.stringify(state.data));
     },
 
@@ -37,8 +37,13 @@ const designSlice = createSlice({
     updateDesign(state, action) {
       const { id, updatedData } = action.payload;
       const index = state.data.findIndex((design) => design.id === id);
+
       if (index !== -1) {
-        state.data[index] = { ...state.data[index], ...updatedData };
+        state.data[index] = {
+          ...state.data[index],
+          ...updatedData,
+        };
+
         localStorage.setItem("designData", JSON.stringify(state.data));
       }
     },
@@ -47,6 +52,17 @@ const designSlice = createSlice({
     deleteDesign(state, action) {
       state.data = state.data.filter((design) => design.id !== action.payload);
       localStorage.setItem("designData", JSON.stringify(state.data));
+    },
+
+    // ---- 🔹 Toggle Wishlist ---- ✅ (THE FIX)
+    toggleWishlist(state, action) {
+      const id = action.payload;
+      const item = state.data.find((d) => d.id === id);
+
+      if (item) {
+        item.wishlist = !item.wishlist; // toggle ❤️
+        localStorage.setItem("designData", JSON.stringify(state.data));
+      }
     },
 
     // ---- 🔹 Filters ----
@@ -68,17 +84,18 @@ const designSlice = createSlice({
   },
 });
 
-// ✅ Export Actions
+// Export Actions
 export const {
   startLoading,
   loadDesignSuccess,
   addDesign,
   updateDesign,
   deleteDesign,
+  toggleWishlist,
   setFilters,
   clearFilters,
   setError,
 } = designSlice.actions;
 
-// ✅ Export Reducer
+// Export Reducer
 export default designSlice.reducer;

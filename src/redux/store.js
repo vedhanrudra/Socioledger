@@ -6,6 +6,7 @@ import itemsReducer from "./itemsSlice";
 import itemGroupReducer from "./itemGroupsSlice";
 import colorsReducer from "./colorSlice";
 import designReducer from "./designSlice";
+import cartReducer from "./cartSlice";
 
 /* 1️⃣ Combine reducers */
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   itemUnit: itemUnitReducer,
   colors: colorsReducer,
   design: designReducer,
+  cart: cartReducer,
  });
 
 /* 2️⃣ Persist config */
